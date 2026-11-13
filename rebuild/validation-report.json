@@ -1,0 +1,198 @@
+{
+  "method": "Rolling-origin end-of-season profile diagnostic (not an early-season backtest). KU reference seasons strictly precede the origin season. No destination-minute filter.",
+  "limitations": [
+    "Matches only players appearing in both source seasons; missing destinations and players without records are not observed failures.",
+    "Observed school changes are not an exhaustive official transfer registry.",
+    "Quality uses prior raw PORPAG; fit uses unshrunk full-season features. This does not validate the live early-season shrinkage.",
+    "Role coverage varies by historical fold. Small KU sample; correlations are descriptive only."
+  ],
+  "kansas": {
+    "n": 16,
+    "fit_vs_outcome": 0.294,
+    "prior_quality_vs_outcome": 0.329,
+    "records": [
+      {
+        "name": "Tarik Black",
+        "destination_season": 2014,
+        "origin": "Memphis",
+        "destination": "Kansas",
+        "available_profiles": 4,
+        "fit": 89.66,
+        "prior_quality": 1.17466,
+        "outcome_quality": 1.67492,
+        "outcome_minutes": 31.6
+      },
+      {
+        "name": "Isaiah Moss",
+        "destination_season": 2020,
+        "origin": "Iowa",
+        "destination": "Kansas",
+        "available_profiles": 5,
+        "fit": 84.2,
+        "prior_quality": 1.80335,
+        "outcome_quality": 1.85982,
+        "outcome_minutes": 59.6
+      },
+      {
+        "name": "Jalen Coleman-Lands",
+        "destination_season": 2022,
+        "origin": "Iowa St.",
+        "destination": "Kansas",
+        "available_profiles": 5,
+        "fit": 79.14,
+        "prior_quality": 2.97564,
+        "outcome_quality": 1.01618,
+        "outcome_minutes": 19.8
+      },
+      {
+        "name": "Remy Martin",
+        "destination_season": 2022,
+        "origin": "Arizona St.",
+        "destination": "Kansas",
+        "available_profiles": 5,
+        "fit": 87.93,
+        "prior_quality": 4.45504,
+        "outcome_quality": 2.69115,
+        "outcome_minutes": 39.3
+      },
+      {
+        "name": "Joseph Yesufu",
+        "destination_season": 2022,
+        "origin": "Drake",
+        "destination": "Kansas",
+        "available_profiles": 5,
+        "fit": 79.39,
+        "prior_quality": 3.14542,
+        "outcome_quality": 0.290531,
+        "outcome_minutes": 19.6
+      },
+      {
+        "name": "Parker Braun",
+        "destination_season": 2024,
+        "origin": "Santa Clara",
+        "destination": "Kansas",
+        "available_profiles": 6,
+        "fit": 73.34,
+        "prior_quality": 0.796487,
+        "outcome_quality": 0.559749,
+        "outcome_minutes": 18.6
+      },
+      {
+        "name": "Nicolas Timberlake",
+        "destination_season": 2024,
+        "origin": "Towson",
+        "destination": "Kansas",
+        "available_profiles": 6,
+        "fit": 83.39,
+        "prior_quality": 3.72421,
+        "outcome_quality": 0.712862,
+        "outcome_minutes": 38.5
+      },
+      {
+        "name": "Hunter Dickinson",
+        "destination_season": 2024,
+        "origin": "Michigan",
+        "destination": "Kansas",
+        "available_profiles": 6,
+        "fit": 86.36,
+        "prior_quality": 5.03366,
+        "outcome_quality": 4.31219,
+        "outcome_minutes": 77.8
+      },
+      {
+        "name": "Shakeel Moore",
+        "destination_season": 2025,
+        "origin": "Mississippi St.",
+        "destination": "Kansas",
+        "available_profiles": 6,
+        "fit": 85.8,
+        "prior_quality": 1.84227,
+        "outcome_quality": 0.525758,
+        "outcome_minutes": 20.2
+      },
+      {
+        "name": "Zeke Mayo",
+        "destination_season": 2025,
+        "origin": "South Dakota St.",
+        "destination": "Kansas",
+        "available_profiles": 6,
+        "fit": 84.58,
+        "prior_quality": 3.52967,
+        "outcome_quality": 3.14536,
+        "outcome_minutes": 78.3
+      },
+      {
+        "name": "David Coit",
+        "destination_season": 2025,
+        "origin": "Northern Illinois",
+        "destination": "Kansas",
+        "available_profiles": 6,
+        "fit": 80.31,
+        "prior_quality": 3.98589,
+        "outcome_quality": 1.2295,
+        "outcome_minutes": 38.3
+      },
+      {
+        "name": "AJ Storr",
+        "destination_season": 2025,
+        "origin": "Wisconsin",
+        "destination": "Kansas",
+        "available_profiles": 6,
+        "fit": 84.02,
+        "prior_quality": 3.74643,
+        "outcome_quality": 0.64664,
+        "outcome_minutes": 38.9
+      },
+      {
+        "name": "Rylan Griffen",
+        "destination_season": 2025,
+        "origin": "Alabama",
+        "destination": "Kansas",
+        "available_profiles": 6,
+        "fit": 78.07,
+        "prior_quality": 3.24429,
+        "outcome_quality": 1.03034,
+        "outcome_minutes": 48.5
+      },
+      {
+        "name": "Jayden Dawson",
+        "destination_season": 2026,
+        "origin": "Loyola Chicago",
+        "destination": "Kansas",
+        "available_profiles": 6,
+        "fit": 86.19,
+        "prior_quality": 2.37902,
+        "outcome_quality": 0.307094,
+        "outcome_minutes": 16.4
+      },
+      {
+        "name": "Tre White",
+        "destination_season": 2026,
+        "origin": "Illinois",
+        "destination": "Kansas",
+        "available_profiles": 6,
+        "fit": 82.46,
+        "prior_quality": 3.13866,
+        "outcome_quality": 3.75013,
+        "outcome_minutes": 77.8
+      },
+      {
+        "name": "Melvin Council Jr.",
+        "destination_season": 2026,
+        "origin": "St. Bonaventure",
+        "destination": "Kansas",
+        "available_profiles": 6,
+        "fit": 81.33,
+        "prior_quality": 2.91607,
+        "outcome_quality": 2.69161,
+        "outcome_minutes": 86.3
+      }
+    ]
+  },
+  "national": {
+    "n": 4318,
+    "fit_vs_outcome": 0.258,
+    "prior_quality_vs_outcome": 0.471
+  },
+  "verdict": "Keep descriptive fit separate from quality. Do not ship fit as a validated forecast."
+}

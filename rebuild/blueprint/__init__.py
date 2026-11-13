@@ -1,0 +1,1 @@
+"""Jayhawk Blueprint research model."""
