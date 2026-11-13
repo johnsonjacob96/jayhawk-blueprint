@@ -6,7 +6,7 @@ from math import sqrt, isfinite
 from statistics import median
 import re
 
-VERSION = '0.2.0'
+VERSION = '0.2.1'
 SUCCESS_SEASONS = [2008, 2012, 2018, 2020, 2022]
 # 2018 is on-court performance, including subsequently vacated results.
 COL = {'name':0,'team':1,'conference':2,'games':3,'minutes_share':4,'ortg':5,
@@ -108,18 +108,23 @@ def qualifies(p,role):
 def fit_profiles(seasons, before=None):
     """Profiles use only historical cohorts; no target or future-season data."""
     years=[y for y in SUCCESS_SEASONS if y in seasons and (before is None or y<before)]
+    comparison_years=sorted(y for y in seasons if before is None or y<before)
+    distributions={y:distribution(seasons[y]) for y in comparison_years}
     profiles={}
     for role,settings in ROLES.items():
-        members=[]
-        for y in years:
-            dist=distribution(seasons[y])
+        members=[]; comparison_members=[]
+        for y in comparison_years:
+            dist=distributions[y]
             for p in seasons[y]:
                 if p['team']=='Kansas' and p['games']>=15 and p['minutes_share']>=20 and qualifies(p,role):
-                    members.append({**p,'v':vector(p,dist)})
+                    member={**p,'v':vector(p,dist)}
+                    comparison_members.append(member)
+                    if y in years: members.append(member)
         if len(members)<2: continue
         keys=settings['features']
         center={k:median(m['v'][k] for m in members if m['v'][k] is not None) for k in keys}
         profiles[role]={'label':settings['label'],'features':keys,'center':center,'members':members,
+                        'comparison_members':comparison_members,
                         'raw_medians':{k:median(m[k] for m in members if m[k] is not None) for k in keys}}
     return profiles
 
@@ -132,8 +137,10 @@ def assess(v,profiles):
     scores={}; comps={}
     for role,profile in profiles.items():
         scores[role]=max(0,100*(1-distance(v,profile['center'],profile['features'])))
-        nearest=sorted(profile['members'],key=lambda m:distance(v,m['v'],profile['features']))[:3]
-        comps[role]=[{'name':m['name'],'season':int(m['season']),'similarity':round(100*(1-distance(v,m['v'],profile['features'])),1)} for m in nearest]
+        nearest=sorted(profile.get('comparison_members',profile['members']),key=lambda m:distance(v,m['v'],profile['features']))[:3]
+        comps[role]=[{'name':m['name'],'season':int(m['season']),
+                     'benchmark':int(m['season']) in SUCCESS_SEASONS,
+                     'similarity':round(100*(1-distance(v,m['v'],profile['features'])),1)} for m in nearest]
     return scores,comps
 
 def evaluate(seasons,target):
@@ -167,6 +174,11 @@ def evaluate(seasons,target):
     for p in outputs:
         p['best_role']=max(p['fit'],key=lambda r:p['fit'][r] if p['fit'][r] is not None else -1)
     summary={r:{'label':p['label'],'count':len(p['members']),'seasons':sorted(set(int(m['season']) for m in p['members'])),
+                'comparison_count':len(p['comparison_members']),
+                'comparison_members':[{'id':m['id'],'name':m['name'],'season':int(m['season']),
+                                       'porpag':round(m['porpag'],2) if m['porpag'] is not None else None,
+                                       'benchmark':int(m['season']) in SUCCESS_SEASONS}
+                                      for m in p['comparison_members']],
                 'center':{k:round(v*100,1) for k,v in p['center'].items()},
                 'raw_medians':{k:round(v,1) for k,v in p['raw_medians'].items()},
                 'members':[{'name':m['name'],'season':int(m['season'])} for m in p['members']]} for r,p in profiles.items()}

@@ -1,5 +1,5 @@
 import unittest
-from blueprint.model import percentile,blend,distance,parse,fit_profiles,FEATURES
+from blueprint.model import percentile,blend,distance,parse,fit_profiles,assess,FEATURES
 class ModelTests(unittest.TestCase):
  def test_ties_and_true_zero(self):
   self.assertEqual(percentile(0,[0,0,1,2]),.25)
@@ -25,4 +25,26 @@ class ModelTests(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,'season'):parse([row],2027)
  def test_future_profiles_excluded(self):
   self.assertEqual(fit_profiles({2022:[]},before=2022),{})
+ def test_recent_comparisons_included_without_changing_benchmarks(self):
+  def player(name,year):
+   return {**{k:20 for k in FEATURES+['porpag']},'name':name,'id':name,
+           'team':'Kansas','season':year,'height_inches':78,'games':30,
+           'minutes_share':70,'three_a':50}
+  old=[player('Benchmark A',2008),player('Benchmark B',2008)]
+  original=fit_profiles({2008:old},before=2027)['organizer']
+  expanded=fit_profiles({2008:old,2024:[player('Recent A',2024)],
+                         2025:[player('Recent B',2025)],2026:[player('Recent C',2026)],
+                         2027:[player('Future',2027)]},before=2027)['organizer']
+  self.assertEqual(original['center'],expanded['center'])
+  self.assertEqual(len(expanded['members']),2)
+  self.assertEqual({p['season'] for p in expanded['comparison_members']},{2008,2024,2025,2026})
+ def test_nearest_comparison_can_come_from_recent_season(self):
+  profile={'features':['ast'],'center':{'ast':.8},
+           'members':[{'name':'Benchmark','season':2008,'v':{'ast':.8}}],
+           'comparison_members':[{'name':'Benchmark','season':2008,'v':{'ast':.8}},
+                                 {'name':'Recent KU player','season':2026,'v':{'ast':.2}}]}
+  scores,comps=assess({'ast':.2},{'organizer':profile})
+  self.assertAlmostEqual(scores['organizer'],40)
+  self.assertEqual(comps['organizer'][0]['name'],'Recent KU player')
+  self.assertFalse(comps['organizer'][0]['benchmark'])
 if __name__=='__main__':unittest.main()

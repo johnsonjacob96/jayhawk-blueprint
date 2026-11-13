@@ -15,7 +15,8 @@ def main():
     args=ap.parse_args()
     datetime.strptime(args.as_of,'%Y-%m-%d')
     rawdir=ROOT/'data/raw'; rawdir.mkdir(parents=True,exist_ok=True)
-    years=sorted(set(SUCCESS_SEASONS+[args.season-1,args.season]))
+    # Comparisons cover every completed KU season, not only benchmark teams.
+    years=list(range(min(SUCCESS_SEASONS),args.season+1))
     for y in years:
         path=rawdir/f'{y}.json'; meta=rawdir/f'{y}.meta.json'
         if not path.exists() or (args.refresh and y==args.season):
@@ -68,6 +69,7 @@ def main():
                      'reference_count':len(reference),'kansas_adjustment':selected=='kansas'}
     result={'version':VERSION,'as_of':args.as_of,'season':args.season,'target_season':args.season+1,
             'outcomes':outcome_summary,
+            'history_seasons':[y for y in years if y<args.season],
             'source':meta,'players':players,'profiles':profiles,'roles':ROLES,'labels':LABELS,
             'teams':len(set(p['team'] for p in players)),
             'limits':['Outcome model tested on full-season historical inputs; early-season projections remain experimental.',
