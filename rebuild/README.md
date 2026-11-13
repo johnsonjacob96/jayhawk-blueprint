@@ -41,6 +41,14 @@ This version derives profile medians from actual KU player-season statistics. Si
 
 ## Data and refresh
 
+### Cloudflare hosting
+
+Cloudflare Pages is a second public host for the same root export. Deploy with `bash rebuild/deploy_cloudflare.sh`; it stages an explicit public-file allowlist into ignored `_site/` and uses the existing Wrangler OAuth login. No API token is copied into CI or the repository. `wrangler.jsonc` selects project `jayhawk-blueprint`, production branch `main`.
+
+The daily Mac refresh publishes to Cloudflare after committing/pushing the generated snapshot. GitHub Actions continues publishing GitHub Pages. Cloudflare uses direct uploads, so a GitHub push alone does not immediately deploy there: manual code releases should run the deploy script, and the daily refresh also picks up changes. Both refreshes require the existing Mac/network/authentication. Stable asset filenames revalidate on reload. Browser-local watchlists and rosters are separate on each hostname.
+
+### Source snapshots
+
 Public source: `https://barttorvik.com/getadvstats.php?year=YYYY` (season-ending year). Source schema was inspected on 2026-11-13: 78 columns. The parser validates season, IDs, count consistency and minute-share units, and rejects duplicate IDs. It does not assume every published column is mapped or validated. On the initial run there were 4,534 player records across 364 teams. This is feed coverage, not an assertion of complete roster coverage.
 
 `data/raw/` holds current cached payloads and provenance/hash sidecars. Refreshes preserve dated source payloads in `data/snapshots/`. `data/grades/` holds dated compact grade exports. Rebuilding is deterministic for fixed source bytes and model version. Files under `web/` are deployable static output. No secret is embedded in the application.

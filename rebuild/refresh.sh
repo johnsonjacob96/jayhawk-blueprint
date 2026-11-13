@@ -28,4 +28,5 @@ if ! git diff --cached --quiet; then
   git commit -m "Refresh Kansas player snapshot $SNAPSHOT_DATE"
   git push origin main
 fi
+bash rebuild/deploy_cloudflare.sh
 printf 'Refresh complete: %s\n' "$SNAPSHOT_DATE"

@@ -3,3 +3,6 @@ __pycache__/
 *.pyc
 rebuild/data/
 rebuild/web/data.js
+_site/
+.wrangler/
+node_modules/
