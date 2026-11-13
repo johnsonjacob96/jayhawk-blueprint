@@ -24,9 +24,20 @@ def predict(values, artifact):
     result = artifact['intercept']
     for k, coefficient in zip(artifact['features'], artifact['coefficients']):
         result += values.get(k, 0.) * coefficient
+    result += ku_transfer_adjustment(values, artifact)
     if not isfinite(result):
         raise ValueError('Non-finite outcome estimate')
     return result
+
+def ku_transfer_adjustment(values, artifact):
+    """Shared translation adjustment, not a player/season success label."""
+    calibration = artifact.get('ku_transfer_calibration', {})
+    return calibration.get('offset', 0.) if values.get('ku') == 1 and values.get('transfer') == 1 else 0.
+
+def shrunk_residual(residuals, prior_strength):
+    if prior_strength <= 0:
+        raise ValueError('Calibration prior must be positive')
+    return sum(residuals) / (len(residuals) + prior_strength)
 
 def explain(values, artifact, limit=4):
     """Associations relative to the training mean, not causal trait effects."""

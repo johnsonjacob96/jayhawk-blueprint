@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 import unittest
 from datetime import datetime, timezone
-from blueprint.outcomes import inputs, predict, explain
+from blueprint.outcomes import inputs, predict, explain, shrunk_residual
 from blueprint.model import FEATURES
 from fetch_cbbd import validate, as_of, observed_games
 
@@ -39,6 +39,32 @@ class OutcomeTests(unittest.TestCase):
         if model['variant'] != 'kansas':
             self.assertFalse(any(k.startswith('ku') for k in model['features']))
         self.assertGreater(report['test']['skills']['transfers']['n'], 2000)
+
+    def test_positive_and_negative_individual_outcomes_both_calibrate(self):
+        self.assertEqual(shrunk_residual([2., -2.], 5), 0.)
+        self.assertGreater(shrunk_residual([2., -1.], 5), 0.)
+        self.assertLess(shrunk_residual([1., -2.], 5), 0.)
+        self.assertEqual(shrunk_residual([], 5), 0.)
+        with self.assertRaises(ValueError): shrunk_residual([1.], 0)
+
+    def test_calibration_only_applies_to_incoming_ku_transfers(self):
+        model = {'intercept': 2., 'features': [], 'coefficients': [],
+                 'ku_transfer_calibration': {'offset': -.6}}
+        self.assertAlmostEqual(predict({'ku':1., 'transfer':1.}, model), 1.4)
+        self.assertEqual(predict({'ku':1., 'transfer':0.}, model), 2.)
+        self.assertEqual(predict({'ku':0., 'transfer':1.}, model), 2.)
+
+    def test_recent_outcomes_and_low_minutes_retained_in_calibration(self):
+        report = json.loads((ROOT/'outcome-report.json').read_text())['ku_transfer_calibration']
+        self.assertEqual(report['training_rows'], len(report['players']))
+        recent = [r for r in report['players'] if r['season'] >= 2024]
+        self.assertEqual(len(recent), 11)
+        self.assertEqual({r['season'] for r in recent}, {2024,2025,2026})
+        self.assertTrue(any(r['ku_minutes_share'] < 20 for r in recent))
+        self.assertTrue(any(r['residual'] > 0 for r in recent))
+        self.assertTrue(any(r['residual'] < 0 for r in recent))
+        for r in report['checks']:
+            self.assertLess(r['trained_through'], r['season'])
 
     def test_game_cutoff_rejects_future_and_naive_time(self):
         games = [{'startDate': '2025-11-01T20:00:00Z'}, {'startDate': '2025-12-01T20:00:00Z'}]

@@ -3,14 +3,16 @@
 
 Selection: rolling validation destination seasons 2020–2023; one fixed final
 test on 2024–2026. Primary metric: transfer MAE in next-season PORPAG units.
-No held-out outcomes enter fitting, normalization, or hyperparameter selection.
+The original frozen test excludes its outcomes during fitting. Final training
+uses all outcomes through 2026. Later KU calibration uses 2020–2026 chronological
+tuning, documented separately; no permanent outcome holdout is kept.
 """
 import hashlib
 import json
 from pathlib import Path
 import numpy as np
 from blueprint.model import parse, distribution, FEATURES
-from blueprint.outcomes import inputs, predict
+from blueprint.outcomes import inputs, predict, shrunk_residual
 
 ROOT = Path(__file__).resolve().parent
 VALIDATION = (2020, 2021, 2022, 2023)
@@ -44,6 +46,8 @@ def dataset():
             if prior and prior['name'] != p['name']:
                 prior = None
             rows.append({'year': origin+1, 'id': p['id'], 'name': p['name'],
+                         'source_team': p['team'], 'destination_team': q['team'],
+                         'destination_minutes_share': q['minutes_share'],
                          'transfer': p['team'] != q['team'], 'ku': q['team'] == 'Kansas',
                          'target': q['porpag'], 'carry': p['porpag'],
                          'x': inputs(p, prior, distributions[origin], distributions[origin-1], dest_conf, q['team'])})
@@ -122,6 +126,62 @@ def choose(validation):
         return ku, best
     return national, best
 
+def calibrate_transfers(rows, production):
+    """Exploratory KU transfer calibration; no permanent outcome holdout.
+
+    Each chronological check fits only earlier outcomes. The checks are also
+    used to select shrinkage, so they are tuning evidence, not an untouched test.
+    Retain the national skill model and shrink the KU mean residual toward zero.
+    """
+    strengths = (5., 10., 25., 50., 100.)
+    checks = []
+    for year in range(2020, 2027):
+        train = [r for r in rows if r['year'] < year]
+        test = [r for r in rows if r['year'] == year and r['ku'] and r['transfer']]
+        if not test:
+            continue
+        model = fit(train, production['variant'], production['penalty'])
+        past = [r for r in train if r['ku'] and r['transfer']]
+        residuals = [r['target'] - predict(r['x'], model) for r in past]
+        for r in test:
+            checks.append((r, predict(r['x'], model), residuals))
+    tested = [r for r, _, _ in checks]
+    baseline = metrics(tested, [p for _, p, _ in checks])
+    candidates = [{'prior_strength': k,
+                   'metrics': metrics(tested, [p + shrunk_residual(residuals, k)
+                                             for _, p, residuals in checks])} for k in strengths]
+    winner = min(candidates, key=lambda c: c['metrics']['mae'])
+    enabled = winner['metrics']['mae'] < baseline['mae'] and winner['metrics']['rmse'] < baseline['rmse']
+    strength = winner['prior_strength']
+    ku = [r for r in rows if r['ku'] and r['transfer']]
+    # Remove any previous calibration before rebuilding it (idempotent).
+    base = {k: v for k, v in production.items() if k != 'ku_transfer_calibration'}
+    residuals = [r['target'] - predict(r['x'], base) for r in ku]
+    offset = shrunk_residual(residuals, strength) if enabled else 0.
+    audit = [{'id': r['id'], 'name': r['name'], 'season': r['year'],
+              'source_team': r['source_team'], 'prior_porpag': round(r['carry'], 3),
+              'ku_porpag': round(r['target'], 3), 'ku_minutes_share': r['destination_minutes_share'],
+              'base_fitted_porpag': round(predict(r['x'], base), 3),
+              'residual': round(residual, 3)} for r, residual in zip(ku, residuals)]
+    artifact = {'offset': offset, 'prior_strength': strength, 'training_rows': len(ku),
+                'trained_through': max(r['year'] for r in ku), 'enabled': enabled}
+    check_rows = [{'id': r['id'], 'season': r['year'], 'name': r['name'],
+                   'trained_through': r['year'] - 1, 'prior_ku_transfers': len(residuals),
+                   'actual': r['target'], 'base_prediction': p,
+                   'adjusted_prediction': p + shrunk_residual(residuals, strength)}
+                  for r, p, residuals in checks]
+    report = {**artifact, 'method': 'mean KU incoming-transfer residual, shrunk toward zero',
+              'check_years': list(range(2020, 2027)), 'baseline': baseline,
+              'selected_check': winner['metrics'], 'candidates': candidates,
+              'checks': check_rows, 'players': audit,
+              'validation_status': 'Exploratory chronological tuning; not an independent test',
+              'limitations': ['Only 16 matched KU incoming transfers; not a causal effect of Kansas.',
+                             'Shared offset calibrates production level; it does not improve within-year player ordering.',
+                             'Player audit residuals use the final fitted model and are not out-of-sample errors.',
+                             'All individual outcomes count equally, including low-minute KU outcomes. No team-season success labels.',
+                             'No outcome is assigned to unmatched or absent players. November inputs remain unvalidated.']}
+    return artifact, report
+
 def main():
     rows, audit, hashes = dataset()
     validation = []
@@ -182,6 +242,13 @@ def main():
         'player_clusters': len(sums), 'bootstrap_replicates': 2000,
         'percentile_95_interval': np.percentile(improvements, [2.5, 97.5]).tolist(),
         'note': 'Descriptive player-cluster bootstrap; three held-out seasons do not capture all era uncertainty.'}
+    calibration, calibration_report = calibrate_transfers(rows, production)
+    production['version'] = report['version'] = 'outcomes-2'
+    production['base_selected_before_test'] = True
+    production['selected_before_test'] = False
+    production['ku_transfer_calibration'] = calibration
+    report['ku_transfer_calibration'] = calibration_report
+    report['test_scope'] = 'Original national model only; excludes the later exploratory KU transfer calibration'
     (ROOT/'outcome-model.json').write_text(json.dumps(production, indent=2)+'\n')
     (ROOT/'outcome-report.json').write_text(json.dumps(report, indent=2)+'\n')
     print(json.dumps({'selected': report['selected'], 'rows': len(rows), 'test': tests}, indent=2))

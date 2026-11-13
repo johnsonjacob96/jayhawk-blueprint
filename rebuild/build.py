@@ -4,7 +4,7 @@ import argparse, hashlib, json, urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from blueprint.model import parse,evaluate,VERSION,SUCCESS_SEASONS,ROLES,LABELS,distribution,percentile
-from blueprint.outcomes import inputs,predict,explain
+from blueprint.outcomes import inputs,predict,explain,ku_transfer_adjustment
 ROOT=Path(__file__).resolve().parent
 
 def main():
@@ -54,6 +54,7 @@ def main():
         if eligible:
             values=inputs(p,prior,dist,pdist,ku_conference)
             output['projection']={'porpag':round(predict(values,artifact),3),
+                                  'ku_adjustment':round(ku_transfer_adjustment(values,artifact),3),
                                   'drivers':explain(values,artifact),
                                   'status':'Experimental: early-season inputs not validated'}
     reference=sorted(p['projection']['porpag'] for p in players if p['projection'])
@@ -66,7 +67,9 @@ def main():
                      'test_years':report['test_years'],'test':report['test'][selected],
                      'baseline':report['test']['production'],'carry_forward':report['test']['carry_forward'],
                      'early_season_validated':False,'target':artifact['target'],
-                     'reference_count':len(reference),'kansas_adjustment':selected=='kansas'}
+                     'reference_count':len(reference),
+                     'ku_transfer_calibration':report.get('ku_transfer_calibration'),
+                     'kansas_adjustment':selected=='kansas' or bool(artifact.get('ku_transfer_calibration',{}).get('enabled'))}
     result={'version':VERSION,'as_of':args.as_of,'season':args.season,'target_season':args.season+1,
             'outcomes':outcome_summary,
             'history_seasons':[y for y in years if y<args.season],

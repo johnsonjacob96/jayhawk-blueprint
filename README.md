@@ -2,7 +2,9 @@
 
 A Kansas basketball scouting board and roster lab. Evaluate current college players against historical KU role profiles, then build a team from an empty roster.
 
-**Live:** https://johnsonjacob96.github.io/jayhawk-blueprint/
+**Live:** https://jayhawk-blueprint.pages.dev/
+
+[GitHub Pages mirror](https://johnsonjacob96.github.io/jayhawk-blueprint/)
 
 - KU blue/crimson design with Kansas circus-style display type and Jayhawk branding.
 - National player search, six historical role profiles, quality and confidence shown separately.

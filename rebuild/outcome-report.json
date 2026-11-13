@@ -1,5 +1,5 @@
 {
-  "version": "outcomes-1",
+  "version": "outcomes-2",
   "target": "next-season PORPAG, conditional on observed D-I return",
   "origin_rotation_floor": 20,
   "selection_years": [
@@ -789,5 +789,427 @@
       0.05968961450144865
     ],
     "note": "Descriptive player-cluster bootstrap; three held-out seasons do not capture all era uncertainty."
-  }
+  },
+  "ku_transfer_calibration": {
+    "offset": -0.6318591652408075,
+    "prior_strength": 5.0,
+    "training_rows": 16,
+    "trained_through": 2026,
+    "enabled": true,
+    "method": "mean KU incoming-transfer residual, shrunk toward zero",
+    "check_years": [
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025,
+      2026
+    ],
+    "baseline": {
+      "n": 15,
+      "mae": 1.1668,
+      "rmse": 1.3636,
+      "bias": 0.8714,
+      "spearman": 0.6536
+    },
+    "selected_check": {
+      "n": 15,
+      "mae": 1.1136,
+      "rmse": 1.228,
+      "bias": 0.513,
+      "spearman": 0.3821
+    },
+    "candidates": [
+      {
+        "prior_strength": 5.0,
+        "metrics": {
+          "n": 15,
+          "mae": 1.1136,
+          "rmse": 1.228,
+          "bias": 0.513,
+          "spearman": 0.3821
+        }
+      },
+      {
+        "prior_strength": 10.0,
+        "metrics": {
+          "n": 15,
+          "mae": 1.12,
+          "rmse": 1.2537,
+          "bias": 0.6094,
+          "spearman": 0.4179
+        }
+      },
+      {
+        "prior_strength": 25.0,
+        "metrics": {
+          "n": 15,
+          "mae": 1.1271,
+          "rmse": 1.2954,
+          "bias": 0.725,
+          "spearman": 0.5321
+        }
+      },
+      {
+        "prior_strength": 50.0,
+        "metrics": {
+          "n": 15,
+          "mae": 1.1396,
+          "rmse": 1.3221,
+          "bias": 0.7867,
+          "spearman": 0.5893
+        }
+      },
+      {
+        "prior_strength": 100.0,
+        "metrics": {
+          "n": 15,
+          "mae": 1.1519,
+          "rmse": 1.3403,
+          "bias": 0.8254,
+          "spearman": 0.6071
+        }
+      }
+    ],
+    "checks": [
+      {
+        "id": "41473",
+        "season": 2020,
+        "name": "Isaiah Moss",
+        "trained_through": 2019,
+        "prior_ku_transfers": 1,
+        "actual": 1.85982,
+        "base_prediction": 2.4633220233999493,
+        "adjusted_prediction": 2.5070010441524797
+      },
+      {
+        "id": "40204",
+        "season": 2022,
+        "name": "Jalen Coleman-Lands",
+        "trained_through": 2021,
+        "prior_ku_transfers": 2,
+        "actual": 1.01618,
+        "base_prediction": 2.3560273919807293,
+        "adjusted_prediction": 2.3380943044248164
+      },
+      {
+        "id": "51115",
+        "season": 2022,
+        "name": "Remy Martin",
+        "trained_through": 2021,
+        "prior_ku_transfers": 2,
+        "actual": 2.69115,
+        "base_prediction": 3.054535543379779,
+        "adjusted_prediction": 3.036602455823866
+      },
+      {
+        "id": "71423",
+        "season": 2022,
+        "name": "Joseph Yesufu",
+        "trained_through": 2021,
+        "prior_ku_transfers": 2,
+        "actual": 0.290531,
+        "base_prediction": 2.582166906952506,
+        "adjusted_prediction": 2.564233819396593
+      },
+      {
+        "id": "66066",
+        "season": 2024,
+        "name": "Parker Braun",
+        "trained_through": 2023,
+        "prior_ku_transfers": 5,
+        "actual": 0.559749,
+        "base_prediction": 0.38955892266038766,
+        "adjusted_prediction": -0.021838549465724943
+      },
+      {
+        "id": "66368",
+        "season": 2024,
+        "name": "Nicolas Timberlake",
+        "trained_through": 2023,
+        "prior_ku_transfers": 5,
+        "actual": 0.712862,
+        "base_prediction": 2.4498796270209153,
+        "adjusted_prediction": 2.038482154894803
+      },
+      {
+        "id": "73454",
+        "season": 2024,
+        "name": "Hunter Dickinson",
+        "trained_through": 2023,
+        "prior_ku_transfers": 5,
+        "actual": 4.31219,
+        "base_prediction": 3.703151819731805,
+        "adjusted_prediction": 3.2917543476056927
+      },
+      {
+        "id": "73400",
+        "season": 2025,
+        "name": "Shakeel Moore",
+        "trained_through": 2024,
+        "prior_ku_transfers": 8,
+        "actual": 0.525758,
+        "base_prediction": 1.8808658484823702,
+        "adjusted_prediction": 1.4372788953027746
+      },
+      {
+        "id": "74884",
+        "season": 2025,
+        "name": "Zeke Mayo",
+        "trained_through": 2024,
+        "prior_ku_transfers": 8,
+        "actual": 3.14536,
+        "base_prediction": 2.583488009115327,
+        "adjusted_prediction": 2.1399010559357317
+      },
+      {
+        "id": "76119",
+        "season": 2025,
+        "name": "David Coit",
+        "trained_through": 2024,
+        "prior_ku_transfers": 8,
+        "actual": 1.2295,
+        "base_prediction": 2.8233949365757627,
+        "adjusted_prediction": 2.379807983396167
+      },
+      {
+        "id": "76604",
+        "season": 2025,
+        "name": "AJ Storr",
+        "trained_through": 2024,
+        "prior_ku_transfers": 8,
+        "actual": 0.64664,
+        "base_prediction": 3.0636939582025473,
+        "adjusted_prediction": 2.620107005022952
+      },
+      {
+        "id": "77083",
+        "season": 2025,
+        "name": "Rylan Griffen",
+        "trained_through": 2024,
+        "prior_ku_transfers": 8,
+        "actual": 1.03034,
+        "base_prediction": 2.6041272588070736,
+        "adjusted_prediction": 2.160540305627478
+      },
+      {
+        "id": "76885",
+        "season": 2026,
+        "name": "Jayden Dawson",
+        "trained_through": 2025,
+        "prior_ku_transfers": 13,
+        "actual": 0.307094,
+        "base_prediction": 2.0651506326944524,
+        "adjusted_prediction": 1.427093916316748
+      },
+      {
+        "id": "77181",
+        "season": 2026,
+        "name": "Tre White",
+        "trained_through": 2025,
+        "prior_ku_transfers": 13,
+        "actual": 3.75013,
+        "base_prediction": 2.87587232997726,
+        "adjusted_prediction": 2.2378156135995555
+      },
+      {
+        "id": "79381",
+        "season": 2026,
+        "name": "Melvin Council Jr.",
+        "trained_through": 2025,
+        "prior_ku_transfers": 13,
+        "actual": 2.69161,
+        "base_prediction": 2.945020413031281,
+        "adjusted_prediction": 2.3069636966535767
+      }
+    ],
+    "players": [
+      {
+        "id": "33214",
+        "name": "Tarik Black",
+        "season": 2014,
+        "source_team": "Memphis",
+        "prior_porpag": 1.175,
+        "ku_porpag": 1.675,
+        "ku_minutes_share": 31.6,
+        "base_fitted_porpag": 1.234,
+        "residual": 0.441
+      },
+      {
+        "id": "41473",
+        "name": "Isaiah Moss",
+        "season": 2020,
+        "source_team": "Iowa",
+        "prior_porpag": 1.803,
+        "ku_porpag": 1.86,
+        "ku_minutes_share": 59.6,
+        "base_fitted_porpag": 2.409,
+        "residual": -0.549
+      },
+      {
+        "id": "40204",
+        "name": "Jalen Coleman-Lands",
+        "season": 2022,
+        "source_team": "Iowa St.",
+        "prior_porpag": 2.976,
+        "ku_porpag": 1.016,
+        "ku_minutes_share": 19.8,
+        "base_fitted_porpag": 2.631,
+        "residual": -1.615
+      },
+      {
+        "id": "51115",
+        "name": "Remy Martin",
+        "season": 2022,
+        "source_team": "Arizona St.",
+        "prior_porpag": 4.455,
+        "ku_porpag": 2.691,
+        "ku_minutes_share": 39.3,
+        "base_fitted_porpag": 3.288,
+        "residual": -0.597
+      },
+      {
+        "id": "71423",
+        "name": "Joseph Yesufu",
+        "season": 2022,
+        "source_team": "Drake",
+        "prior_porpag": 3.145,
+        "ku_porpag": 0.291,
+        "ku_minutes_share": 19.6,
+        "base_fitted_porpag": 2.394,
+        "residual": -2.104
+      },
+      {
+        "id": "66066",
+        "name": "Parker Braun",
+        "season": 2024,
+        "source_team": "Santa Clara",
+        "prior_porpag": 0.796,
+        "ku_porpag": 0.56,
+        "ku_minutes_share": 18.6,
+        "base_fitted_porpag": 0.529,
+        "residual": 0.031
+      },
+      {
+        "id": "66368",
+        "name": "Nicolas Timberlake",
+        "season": 2024,
+        "source_team": "Towson",
+        "prior_porpag": 3.724,
+        "ku_porpag": 0.713,
+        "ku_minutes_share": 38.5,
+        "base_fitted_porpag": 2.487,
+        "residual": -1.774
+      },
+      {
+        "id": "73454",
+        "name": "Hunter Dickinson",
+        "season": 2024,
+        "source_team": "Michigan",
+        "prior_porpag": 5.034,
+        "ku_porpag": 4.312,
+        "ku_minutes_share": 77.8,
+        "base_fitted_porpag": 3.788,
+        "residual": 0.524
+      },
+      {
+        "id": "73400",
+        "name": "Shakeel Moore",
+        "season": 2025,
+        "source_team": "Mississippi St.",
+        "prior_porpag": 1.842,
+        "ku_porpag": 0.526,
+        "ku_minutes_share": 20.2,
+        "base_fitted_porpag": 1.921,
+        "residual": -1.395
+      },
+      {
+        "id": "74884",
+        "name": "Zeke Mayo",
+        "season": 2025,
+        "source_team": "South Dakota St.",
+        "prior_porpag": 3.53,
+        "ku_porpag": 3.145,
+        "ku_minutes_share": 78.3,
+        "base_fitted_porpag": 2.479,
+        "residual": 0.666
+      },
+      {
+        "id": "76119",
+        "name": "David Coit",
+        "season": 2025,
+        "source_team": "Northern Illinois",
+        "prior_porpag": 3.986,
+        "ku_porpag": 1.23,
+        "ku_minutes_share": 38.3,
+        "base_fitted_porpag": 2.779,
+        "residual": -1.55
+      },
+      {
+        "id": "76604",
+        "name": "AJ Storr",
+        "season": 2025,
+        "source_team": "Wisconsin",
+        "prior_porpag": 3.746,
+        "ku_porpag": 0.647,
+        "ku_minutes_share": 38.9,
+        "base_fitted_porpag": 3.122,
+        "residual": -2.475
+      },
+      {
+        "id": "77083",
+        "name": "Rylan Griffen",
+        "season": 2025,
+        "source_team": "Alabama",
+        "prior_porpag": 3.244,
+        "ku_porpag": 1.03,
+        "ku_minutes_share": 48.5,
+        "base_fitted_porpag": 2.637,
+        "residual": -1.607
+      },
+      {
+        "id": "76885",
+        "name": "Jayden Dawson",
+        "season": 2026,
+        "source_team": "Loyola Chicago",
+        "prior_porpag": 2.379,
+        "ku_porpag": 0.307,
+        "ku_minutes_share": 16.4,
+        "base_fitted_porpag": 2.096,
+        "residual": -1.789
+      },
+      {
+        "id": "77181",
+        "name": "Tre White",
+        "season": 2026,
+        "source_team": "Illinois",
+        "prior_porpag": 3.139,
+        "ku_porpag": 3.75,
+        "ku_minutes_share": 77.8,
+        "base_fitted_porpag": 2.937,
+        "residual": 0.813
+      },
+      {
+        "id": "79381",
+        "name": "Melvin Council Jr.",
+        "season": 2026,
+        "source_team": "St. Bonaventure",
+        "prior_porpag": 2.916,
+        "ku_porpag": 2.692,
+        "ku_minutes_share": 86.3,
+        "base_fitted_porpag": 2.982,
+        "residual": -0.29
+      }
+    ],
+    "validation_status": "Exploratory chronological tuning; not an independent test",
+    "limitations": [
+      "Only 16 matched KU incoming transfers; not a causal effect of Kansas.",
+      "Shared offset calibrates production level; it does not improve within-year player ordering.",
+      "Player audit residuals use the final fitted model and are not out-of-sample errors.",
+      "All individual outcomes count equally, including low-minute KU outcomes. No team-season success labels.",
+      "No outcome is assigned to unmatched or absent players. November inputs remain unvalidated."
+    ]
+  },
+  "test_scope": "Original national model only; excludes the later exploratory KU transfer calibration"
 }

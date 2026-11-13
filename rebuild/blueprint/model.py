@@ -6,7 +6,7 @@ from math import sqrt, isfinite
 from statistics import median
 import re
 
-VERSION = '0.2.1'
+VERSION = '0.3.0'
 SUCCESS_SEASONS = [2008, 2012, 2018, 2020, 2022]
 # 2018 is on-court performance, including subsequently vacated results.
 COL = {'name':0,'team':1,'conference':2,'games':3,'minutes_share':4,'ortg':5,
@@ -25,6 +25,14 @@ ROLES = {
  'stretch': {'label':'Spacing big','short':'Stretch big','features':['three_rate','three_pct','ft_pct','drb','orb','blk']},
  'anchor': {'label':'Interior anchor','short':'Anchor','features':['two_pct','three_rate','orb','drb','blk','tov']},
 }
+ROLE_BOUNDS = {'organizer':(0,79), 'scorer':(0,80), 'wing':(76,82),
+               'connector':(77,82), 'stretch':(80,float('inf')), 'anchor':(80,float('inf'))}
+
+def role_eligible(player, role):
+    """Broad size guard only; early-season skill rates do not exclude candidates."""
+    height = player.get('height_inches')
+    lo, hi = ROLE_BOUNDS[role]
+    return height is not None and lo <= height <= hi
 
 def number(v):
     if isinstance(v,bool): return None
@@ -161,18 +169,14 @@ def evaluate(seasons,target):
                         'prior_team':old['team'] if old else None,'prior_season':target-1 if old else None,
                         'raw_similarity':raw,'comparisons':comps,'features':{k:round(v[k]*100,1) for k in FEATURES},
                         'stats':{k:p[k] for k in FEATURES+['minutes_share','porpag','three_a','three_m']},
-                        'portal_status':'Not assessed','eligibility':'Unverified','fit':{}})
-    # Percentile is descriptive rank among the source's active players, not probability.
-    for role in profiles:
-        bounds={'organizer':(0,79),'scorer':(0,80),'wing':(76,82),'connector':(77,82),'stretch':(80,100),'anchor':(80,100)}
-        lo,hi=bounds[role]
-        eligible={p['id'] for p in current if p['height_inches'] is not None and lo<=p['height_inches']<=hi and p['minutes_share']>=20}
-        ranks=sorted(p['raw_similarity'][role] for p in outputs if p['games']>0 and p['id'] in eligible)
-        for p in outputs:
-            p['fit'][role]=round(100*percentile(p['raw_similarity'][role],ranks),1) if p['games']>0 else None
-            p['raw_similarity'][role]=round(p['raw_similarity'][role],1)
+                        'portal_status':'Not assessed','eligibility':'Unverified',
+                        'fit':{r:round(raw[r],1) if p['games']>0 and role_eligible(p,r) else None for r in profiles}})
+    # Absolute resemblance, never stretched to fill a percentile scale. Missing
+    # height/no appearances leave a player unrated rather than assigning a role.
     for p in outputs:
-        p['best_role']=max(p['fit'],key=lambda r:p['fit'][r] if p['fit'][r] is not None else -1)
+        eligible=[r for r,v in p['fit'].items() if v is not None]
+        p['best_role']=max(eligible,key=lambda r:p['fit'][r]) if eligible else None
+        p['raw_similarity']={r:round(v,1) for r,v in p['raw_similarity'].items()}
     summary={r:{'label':p['label'],'count':len(p['members']),'seasons':sorted(set(int(m['season']) for m in p['members'])),
                 'comparison_count':len(p['comparison_members']),
                 'comparison_members':[{'id':m['id'],'name':m['name'],'season':int(m['season']),

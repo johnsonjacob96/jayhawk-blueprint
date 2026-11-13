@@ -280,7 +280,7 @@
   "intercept": -1.2858577506406177,
   "training_rows": 29873,
   "trained_through": 2026,
-  "version": "outcomes-1",
+  "version": "outcomes-2",
   "target": "next-season PORPAG, conditional on observed D-I return",
   "selection_years": [
     2020,
@@ -293,6 +293,14 @@
     2025,
     2026
   ],
-  "selected_before_test": true,
-  "early_season_validated": false
+  "selected_before_test": false,
+  "early_season_validated": false,
+  "ku_transfer_calibration": {
+    "offset": -0.6318591652408075,
+    "prior_strength": 5.0,
+    "training_rows": 16,
+    "trained_through": 2026,
+    "enabled": true
+  },
+  "base_selected_before_test": true
 }

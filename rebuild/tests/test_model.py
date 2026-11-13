@@ -1,5 +1,5 @@
 import unittest
-from blueprint.model import percentile,blend,distance,parse,fit_profiles,assess,FEATURES
+from blueprint.model import percentile,blend,distance,parse,fit_profiles,assess,evaluate,role_eligible,FEATURES
 class ModelTests(unittest.TestCase):
  def test_ties_and_true_zero(self):
   self.assertEqual(percentile(0,[0,0,1,2]),.25)
@@ -47,4 +47,32 @@ class ModelTests(unittest.TestCase):
   self.assertAlmostEqual(scores['organizer'],40)
   self.assertEqual(comps['organizer'][0]['name'],'Recent KU player')
   self.assertFalse(comps['organizer'][0]['benchmark'])
+ def test_role_bounds_include_edges_and_reject_missing_height(self):
+  self.assertFalse(role_eligible({'height_inches':73},'connector'))
+  self.assertFalse(role_eligible({'height_inches':76},'stretch'))
+  self.assertTrue(role_eligible({'height_inches':77},'connector'))
+  self.assertTrue(role_eligible({'height_inches':80},'stretch'))
+  self.assertFalse(role_eligible({'height_inches':None},'organizer'))
+ def test_evaluation_keeps_absolute_match_and_only_eligible_roles(self):
+  def player(name,h,year,three=30):
+   return {**{k:20 for k in FEATURES+['porpag']},'name':name,'id':name,
+           'team':'Kansas','season':year,'height_inches':h,'height':'6-1',
+           'games':30,'minutes_share':70,'three_a':50,'three_m':15,'two_a':100,'fta':50,
+           'estimated_minutes':840,'usage':25,'ast':25,'three_rate':three,
+           'conference':'B12','class':'Jr','position':'G'}
+  history=[player(str(i),h,2008,t) for i,(h,t) in enumerate([(78,30),(78,30),(82,30),(82,30),(82,10),(82,10)])]
+  guard=player('Guard',73,2027);guard['ast']=90
+  big=player('Big',84,2027);big['ast']=5
+  missing=player('Missing height',None,2027)
+  absent=player('No appearances',78,2027);absent['games']=0
+  outputs,_=evaluate({2008:history,2027:[guard,big,missing,absent]},2027)
+  g,b,m,a=outputs
+  self.assertIsNone(g['fit']['connector']);self.assertIsNone(g['fit']['stretch'])
+  self.assertIn(g['best_role'],['organizer','scorer'])
+  self.assertLess(g['fit']['organizer'],99)
+  for p in outputs:
+   for role,score in p['fit'].items():
+    if score is not None:self.assertEqual(score,p['raw_similarity'][role])
+  self.assertIn(b['best_role'],['anchor','stretch'])
+  self.assertIsNone(m['best_role']);self.assertIsNone(a['best_role'])
 if __name__=='__main__':unittest.main()
