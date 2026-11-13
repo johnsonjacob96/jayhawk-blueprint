@@ -1,0 +1,793 @@
+{
+  "version": "outcomes-1",
+  "target": "next-season PORPAG, conditional on observed D-I return",
+  "origin_rotation_floor": 20,
+  "selection_years": [
+    2020,
+    2021,
+    2022,
+    2023
+  ],
+  "test_years": [
+    2024,
+    2025,
+    2026
+  ],
+  "training_rows": 29873,
+  "selected": {
+    "variant": "skills",
+    "penalty": 1000.0
+  },
+  "validation": [
+    {
+      "variant": "production",
+      "penalty": 10.0,
+      "metrics": {
+        "all": {
+          "n": 7957,
+          "mae": 0.8679,
+          "rmse": 1.1028,
+          "bias": 0.0105,
+          "spearman": 0.6101
+        },
+        "transfers": {
+          "n": 1509,
+          "mae": 0.9645,
+          "rmse": 1.2151,
+          "bias": 0.264,
+          "spearman": 0.4465
+        },
+        "kansas": {
+          "n": 20,
+          "mae": 1.0694,
+          "rmse": 1.3025,
+          "bias": -0.4653,
+          "spearman": 0.5068
+        },
+        "kansas_transfers": {
+          "n": 4,
+          "mae": 1.4528,
+          "rmse": 1.6719,
+          "bias": 1.4528,
+          "spearman": 0.4
+        }
+      }
+    },
+    {
+      "variant": "production",
+      "penalty": 100.0,
+      "metrics": {
+        "all": {
+          "n": 7957,
+          "mae": 0.8678,
+          "rmse": 1.1024,
+          "bias": 0.0104,
+          "spearman": 0.6101
+        },
+        "transfers": {
+          "n": 1509,
+          "mae": 0.9635,
+          "rmse": 1.2136,
+          "bias": 0.2634,
+          "spearman": 0.4465
+        },
+        "kansas": {
+          "n": 20,
+          "mae": 1.0718,
+          "rmse": 1.3044,
+          "bias": -0.4701,
+          "spearman": 0.5068
+        },
+        "kansas_transfers": {
+          "n": 4,
+          "mae": 1.4457,
+          "rmse": 1.6659,
+          "bias": 1.4457,
+          "spearman": 0.4
+        }
+      }
+    },
+    {
+      "variant": "production",
+      "penalty": 1000.0,
+      "metrics": {
+        "all": {
+          "n": 7957,
+          "mae": 0.8668,
+          "rmse": 1.0999,
+          "bias": 0.0094,
+          "spearman": 0.6101
+        },
+        "transfers": {
+          "n": 1509,
+          "mae": 0.9541,
+          "rmse": 1.2002,
+          "bias": 0.2582,
+          "spearman": 0.4467
+        },
+        "kansas": {
+          "n": 20,
+          "mae": 1.0946,
+          "rmse": 1.3229,
+          "bias": -0.5155,
+          "spearman": 0.5053
+        },
+        "kansas_transfers": {
+          "n": 4,
+          "mae": 1.3785,
+          "rmse": 1.6088,
+          "bias": 1.3785,
+          "spearman": 0.4
+        }
+      }
+    },
+    {
+      "variant": "skills",
+      "penalty": 10.0,
+      "metrics": {
+        "all": {
+          "n": 7957,
+          "mae": 0.8339,
+          "rmse": 1.0598,
+          "bias": -0.0494,
+          "spearman": 0.642
+        },
+        "transfers": {
+          "n": 1509,
+          "mae": 0.9042,
+          "rmse": 1.1388,
+          "bias": -0.0375,
+          "spearman": 0.4935
+        },
+        "kansas": {
+          "n": 20,
+          "mae": 0.881,
+          "rmse": 1.0956,
+          "bias": -0.3649,
+          "spearman": 0.7579
+        },
+        "kansas_transfers": {
+          "n": 4,
+          "mae": 1.0634,
+          "rmse": 1.2676,
+          "bias": 1.0634,
+          "spearman": 1.0
+        }
+      }
+    },
+    {
+      "variant": "skills",
+      "penalty": 100.0,
+      "metrics": {
+        "all": {
+          "n": 7957,
+          "mae": 0.8331,
+          "rmse": 1.0588,
+          "bias": -0.0505,
+          "spearman": 0.6422
+        },
+        "transfers": {
+          "n": 1509,
+          "mae": 0.8994,
+          "rmse": 1.1333,
+          "bias": -0.0412,
+          "spearman": 0.4954
+        },
+        "kansas": {
+          "n": 20,
+          "mae": 0.8931,
+          "rmse": 1.1073,
+          "bias": -0.3692,
+          "spearman": 0.7639
+        },
+        "kansas_transfers": {
+          "n": 4,
+          "mae": 1.0817,
+          "rmse": 1.2865,
+          "bias": 1.0817,
+          "spearman": 1.0
+        }
+      }
+    },
+    {
+      "variant": "skills",
+      "penalty": 1000.0,
+      "metrics": {
+        "all": {
+          "n": 7957,
+          "mae": 0.8337,
+          "rmse": 1.0592,
+          "bias": -0.054,
+          "spearman": 0.6398
+        },
+        "transfers": {
+          "n": 1509,
+          "mae": 0.8932,
+          "rmse": 1.1287,
+          "bias": -0.0515,
+          "spearman": 0.4916
+        },
+        "kansas": {
+          "n": 20,
+          "mae": 0.9617,
+          "rmse": 1.1786,
+          "bias": -0.4085,
+          "spearman": 0.7068
+        },
+        "kansas_transfers": {
+          "n": 4,
+          "mae": 1.1496,
+          "rmse": 1.3732,
+          "bias": 1.1496,
+          "spearman": 0.4
+        }
+      }
+    },
+    {
+      "variant": "kansas",
+      "penalty": 10.0,
+      "metrics": {
+        "all": {
+          "n": 7957,
+          "mae": 0.8337,
+          "rmse": 1.0598,
+          "bias": -0.0494,
+          "spearman": 0.6419
+        },
+        "transfers": {
+          "n": 1509,
+          "mae": 0.9059,
+          "rmse": 1.141,
+          "bias": -0.0373,
+          "spearman": 0.4926
+        },
+        "kansas": {
+          "n": 20,
+          "mae": 0.8467,
+          "rmse": 1.0875,
+          "bias": 0.1004,
+          "spearman": 0.6872
+        },
+        "kansas_transfers": {
+          "n": 4,
+          "mae": 1.7486,
+          "rmse": 1.872,
+          "bias": 1.7486,
+          "spearman": 0.8
+        }
+      }
+    },
+    {
+      "variant": "kansas",
+      "penalty": 100.0,
+      "metrics": {
+        "all": {
+          "n": 7957,
+          "mae": 0.833,
+          "rmse": 1.0587,
+          "bias": -0.0505,
+          "spearman": 0.6422
+        },
+        "transfers": {
+          "n": 1509,
+          "mae": 0.8999,
+          "rmse": 1.1338,
+          "bias": -0.0413,
+          "spearman": 0.4951
+        },
+        "kansas": {
+          "n": 20,
+          "mae": 0.8535,
+          "rmse": 1.0705,
+          "bias": -0.2082,
+          "spearman": 0.7308
+        },
+        "kansas_transfers": {
+          "n": 4,
+          "mae": 1.277,
+          "rmse": 1.4543,
+          "bias": 1.277,
+          "spearman": 1.0
+        }
+      }
+    },
+    {
+      "variant": "kansas",
+      "penalty": 1000.0,
+      "metrics": {
+        "all": {
+          "n": 7957,
+          "mae": 0.8336,
+          "rmse": 1.0592,
+          "bias": -0.054,
+          "spearman": 0.6398
+        },
+        "transfers": {
+          "n": 1509,
+          "mae": 0.8933,
+          "rmse": 1.1288,
+          "bias": -0.0516,
+          "spearman": 0.4916
+        },
+        "kansas": {
+          "n": 20,
+          "mae": 0.9538,
+          "rmse": 1.1715,
+          "bias": -0.3856,
+          "spearman": 0.7128
+        },
+        "kansas_transfers": {
+          "n": 4,
+          "mae": 1.1766,
+          "rmse": 1.3961,
+          "bias": 1.1766,
+          "spearman": 0.4
+        }
+      }
+    }
+  ],
+  "test": {
+    "carry_forward": {
+      "all": {
+        "n": 5948,
+        "mae": 0.9137,
+        "rmse": 1.1745,
+        "bias": -0.2005,
+        "spearman": 0.5892
+      },
+      "transfers": {
+        "n": 2412,
+        "mae": 0.9866,
+        "rmse": 1.2553,
+        "bias": 0.0206,
+        "spearman": 0.4849
+      },
+      "kansas": {
+        "n": 17,
+        "mae": 1.3465,
+        "rmse": 1.7073,
+        "bias": 0.6653,
+        "spearman": 0.2819
+      },
+      "kansas_transfers": {
+        "n": 11,
+        "mae": 1.5135,
+        "rmse": 1.8672,
+        "bias": 1.4023,
+        "spearman": 0.5636
+      }
+    },
+    "production": {
+      "all": {
+        "n": 5948,
+        "mae": 0.8786,
+        "rmse": 1.1193,
+        "bias": -0.0225,
+        "spearman": 0.5875
+      },
+      "transfers": {
+        "n": 2412,
+        "mae": 0.9431,
+        "rmse": 1.1824,
+        "bias": 0.1607,
+        "spearman": 0.4951
+      },
+      "kansas": {
+        "n": 17,
+        "mae": 1.2926,
+        "rmse": 1.5311,
+        "bias": 0.426,
+        "spearman": 0.2892
+      },
+      "kansas_transfers": {
+        "n": 11,
+        "mae": 1.3798,
+        "rmse": 1.6317,
+        "bias": 1.0893,
+        "spearman": 0.6545
+      }
+    },
+    "skills": {
+      "all": {
+        "n": 5948,
+        "mae": 0.8445,
+        "rmse": 1.0749,
+        "bias": -0.1271,
+        "spearman": 0.6215
+      },
+      "transfers": {
+        "n": 2412,
+        "mae": 0.8984,
+        "rmse": 1.1259,
+        "bias": -0.114,
+        "spearman": 0.5341
+      },
+      "kansas": {
+        "n": 17,
+        "mae": 1.0767,
+        "rmse": 1.2676,
+        "bias": 0.2352,
+        "spearman": 0.5637
+      },
+      "kansas_transfers": {
+        "n": 11,
+        "mae": 1.1461,
+        "rmse": 1.3222,
+        "bias": 0.7339,
+        "spearman": 0.7636
+      }
+    },
+    "kansas": {
+      "all": {
+        "n": 5948,
+        "mae": 0.8445,
+        "rmse": 1.075,
+        "bias": -0.1271,
+        "spearman": 0.6215
+      },
+      "transfers": {
+        "n": 2412,
+        "mae": 0.8984,
+        "rmse": 1.126,
+        "bias": -0.114,
+        "spearman": 0.5341
+      },
+      "kansas": {
+        "n": 17,
+        "mae": 1.0764,
+        "rmse": 1.2741,
+        "bias": 0.2625,
+        "spearman": 0.5564
+      },
+      "kansas_transfers": {
+        "n": 11,
+        "mae": 1.155,
+        "rmse": 1.3384,
+        "bias": 0.7614,
+        "spearman": 0.7636
+      }
+    }
+  },
+  "audit": [
+    {
+      "origin_season": 2010,
+      "eligible_origins": 3016,
+      "matched_next_season": 1812,
+      "unobserved_next_season": 1204,
+      "missing_prior_destination_context": 0
+    },
+    {
+      "origin_season": 2011,
+      "eligible_origins": 2983,
+      "matched_next_season": 1748,
+      "unobserved_next_season": 1235,
+      "missing_prior_destination_context": 0
+    },
+    {
+      "origin_season": 2012,
+      "eligible_origins": 2947,
+      "matched_next_season": 1762,
+      "unobserved_next_season": 1185,
+      "missing_prior_destination_context": 0
+    },
+    {
+      "origin_season": 2013,
+      "eligible_origins": 2979,
+      "matched_next_season": 1812,
+      "unobserved_next_season": 1167,
+      "missing_prior_destination_context": 2
+    },
+    {
+      "origin_season": 2014,
+      "eligible_origins": 3041,
+      "matched_next_season": 1800,
+      "unobserved_next_season": 1241,
+      "missing_prior_destination_context": 0
+    },
+    {
+      "origin_season": 2015,
+      "eligible_origins": 3033,
+      "matched_next_season": 1733,
+      "unobserved_next_season": 1300,
+      "missing_prior_destination_context": 0
+    },
+    {
+      "origin_season": 2016,
+      "eligible_origins": 3053,
+      "matched_next_season": 1791,
+      "unobserved_next_season": 1262,
+      "missing_prior_destination_context": 0
+    },
+    {
+      "origin_season": 2017,
+      "eligible_origins": 3032,
+      "matched_next_season": 1745,
+      "unobserved_next_season": 1287,
+      "missing_prior_destination_context": 0
+    },
+    {
+      "origin_season": 2018,
+      "eligible_origins": 3033,
+      "matched_next_season": 1768,
+      "unobserved_next_season": 1265,
+      "missing_prior_destination_context": 1
+    },
+    {
+      "origin_season": 2019,
+      "eligible_origins": 3044,
+      "matched_next_season": 1768,
+      "unobserved_next_season": 1276,
+      "missing_prior_destination_context": 0
+    },
+    {
+      "origin_season": 2020,
+      "eligible_origins": 3047,
+      "matched_next_season": 1854,
+      "unobserved_next_season": 1193,
+      "missing_prior_destination_context": 2
+    },
+    {
+      "origin_season": 2021,
+      "eligible_origins": 3030,
+      "matched_next_season": 2316,
+      "unobserved_next_season": 714,
+      "missing_prior_destination_context": 2
+    },
+    {
+      "origin_season": 2022,
+      "eligible_origins": 3103,
+      "matched_next_season": 2027,
+      "unobserved_next_season": 1076,
+      "missing_prior_destination_context": 4
+    },
+    {
+      "origin_season": 2023,
+      "eligible_origins": 3145,
+      "matched_next_season": 2056,
+      "unobserved_next_season": 1089,
+      "missing_prior_destination_context": 0
+    },
+    {
+      "origin_season": 2024,
+      "eligible_origins": 3144,
+      "matched_next_season": 2026,
+      "unobserved_next_season": 1118,
+      "missing_prior_destination_context": 1
+    },
+    {
+      "origin_season": 2025,
+      "eligible_origins": 3154,
+      "matched_next_season": 1868,
+      "unobserved_next_season": 1286,
+      "missing_prior_destination_context": 1
+    }
+  ],
+  "source_sha256": {
+    "2008": "072a60585da02e7e7237a50cc8eea4e24b20baebf4ff22d4807c42a4d23678e4",
+    "2009": "af694ed8bfd9a90a0ac228d01b08885bbc63e1e2a2460a9b0b41f2cd3ca48636",
+    "2010": "c8f2951137a7230565f2d4649d91ff700c5e6fcff52c4f1d795dfc0978639231",
+    "2011": "bf7588f399e031976c33f62d92331d7a76275844e707ef522322efc6f15a9716",
+    "2012": "5caa9d7485dd093cd1c61d4262a18e6414e66b23978a651cb9dba76517513d0e",
+    "2013": "036abd41b522a8bf7e5e495f9db4919f770420b6ca79d342bf50e7c984b09f13",
+    "2014": "c88342b4742154738cdb68693531645d5b586de84cd5150eb16dcce96fa1a627",
+    "2015": "2679b6632165c794f51d6f5e258cccef2faf11240510cf46e32c09f68d477045",
+    "2016": "a9e0e9e18c24788ce6b3497a04cb1d9af6e9fe9163a2b03e3707f2d38b28b981",
+    "2017": "cfdffb9b69ada8e624c96b0587deb956dcd09419f337a44539474815ffc53890",
+    "2018": "aaf935c25360a66ff4d94a62d943d68976edd6351f933eaabdeda2f9e1ef89d2",
+    "2019": "13bcf5b647721407940d7f372c79426dd7b55d153779f347e1a0ac4b2e028c00",
+    "2020": "2450011b8e76808ef93c0adf2aa7e2ec9aae417ab1d15d18a875dfa8cba1c083",
+    "2021": "077a5df013afac1f66b3955b36e31c3e6ac1471b793f2f10857a8070b76c8e65",
+    "2022": "e7bb6216751c2b5691e7f6759e5e7a8abb1c9b91e8bb72f9f49a6202a74b5d3c",
+    "2023": "dab4fe0558b7845a18a9b7c106338728d9dcccb42f9f839f038961ce25642a52",
+    "2024": "be289140de51c387ea63d5d51f1b6ffcff2cf48d7a321f47f0732e86e6655784",
+    "2025": "0004c8c5aebd9dc19bc3affbd9627d769418eeac6dc9d5ab7f81a52633b7f9be",
+    "2026": "808365a4f6a4ce977c638f35bb872d7db9910c487dee9d7f33753a25db7d3107"
+  },
+  "limitations": [
+    "Observed consecutive D-I seasons only: no outcome is assigned to missing players.",
+    "Players may recur across chronological folds; these are not independent person-level trials.",
+    "End-of-season inputs only. Early-season blended forecasts remain unvalidated.",
+    "PORPAG is a production proxy, not team wins or scheme defense.",
+    "Prior-year destination conference is context, not game-level opponent adjustment.",
+    "Historical role similarity is separate from the outcome model.",
+    "Kansas-only samples are small; predictive coefficients are not causal effects."
+  ],
+  "test_by_year": {
+    "2024": {
+      "production": {
+        "all": {
+          "n": 2056,
+          "mae": 0.8726,
+          "rmse": 1.113,
+          "bias": -0.0596,
+          "spearman": 0.6033
+        },
+        "transfers": {
+          "n": 632,
+          "mae": 0.9405,
+          "rmse": 1.1873,
+          "bias": 0.1037,
+          "spearman": 0.4973
+        },
+        "kansas": {
+          "n": 6,
+          "mae": 1.2047,
+          "rmse": 1.4232,
+          "bias": 0.2007,
+          "spearman": 0.4286
+        },
+        "kansas_transfers": {
+          "n": 3,
+          "mae": 1.3231,
+          "rmse": 1.6276,
+          "bias": 0.8024,
+          "spearman": 1.0
+        }
+      },
+      "skills": {
+        "all": {
+          "n": 2056,
+          "mae": 0.841,
+          "rmse": 1.0706,
+          "bias": -0.1327,
+          "spearman": 0.6343
+        },
+        "transfers": {
+          "n": 632,
+          "mae": 0.9205,
+          "rmse": 1.1477,
+          "bias": -0.176,
+          "spearman": 0.5298
+        },
+        "kansas": {
+          "n": 6,
+          "mae": 0.857,
+          "rmse": 1.0032,
+          "bias": -0.0077,
+          "spearman": 0.9429
+        },
+        "kansas_transfers": {
+          "n": 3,
+          "mae": 0.8387,
+          "rmse": 1.0673,
+          "bias": 0.3193,
+          "spearman": 1.0
+        }
+      }
+    },
+    "2025": {
+      "production": {
+        "all": {
+          "n": 2025,
+          "mae": 0.8544,
+          "rmse": 1.085,
+          "bias": 0.0147,
+          "spearman": 0.5956
+        },
+        "transfers": {
+          "n": 828,
+          "mae": 0.935,
+          "rmse": 1.1781,
+          "bias": 0.22,
+          "spearman": 0.4918
+        },
+        "kansas": {
+          "n": 7,
+          "mae": 1.3234,
+          "rmse": 1.5628,
+          "bias": 0.9819,
+          "spearman": 0.6786
+        },
+        "kansas_transfers": {
+          "n": 5,
+          "mae": 1.6137,
+          "rmse": 1.8017,
+          "bias": 1.6137,
+          "spearman": 0.8
+        }
+      },
+      "skills": {
+        "all": {
+          "n": 2025,
+          "mae": 0.8198,
+          "rmse": 1.0341,
+          "bias": -0.0913,
+          "spearman": 0.6319
+        },
+        "transfers": {
+          "n": 828,
+          "mae": 0.8783,
+          "rmse": 1.1039,
+          "bias": -0.0363,
+          "spearman": 0.5346
+        },
+        "kansas": {
+          "n": 7,
+          "mae": 1.1232,
+          "rmse": 1.3065,
+          "bias": 0.7417,
+          "spearman": 0.4643
+        },
+        "kansas_transfers": {
+          "n": 5,
+          "mae": 1.4118,
+          "rmse": 1.5248,
+          "bias": 1.199,
+          "spearman": 0.3
+        }
+      }
+    },
+    "2026": {
+      "production": {
+        "all": {
+          "n": 1867,
+          "mae": 0.9115,
+          "rmse": 1.1619,
+          "bias": -0.0219,
+          "spearman": 0.5606
+        },
+        "transfers": {
+          "n": 952,
+          "mae": 0.9518,
+          "rmse": 1.183,
+          "bias": 0.147,
+          "spearman": 0.4971
+        },
+        "kansas": {
+          "n": 4,
+          "mae": 1.3707,
+          "rmse": 1.6278,
+          "bias": -0.209,
+          "spearman": -0.2
+        },
+        "kansas_transfers": {
+          "n": 3,
+          "mae": 1.0465,
+          "rmse": 1.3049,
+          "bias": 0.5023,
+          "spearman": 1.0
+        }
+      },
+      "skills": {
+        "all": {
+          "n": 1867,
+          "mae": 0.8753,
+          "rmse": 1.1221,
+          "bias": -0.1599,
+          "spearman": 0.5959
+        },
+        "transfers": {
+          "n": 952,
+          "mae": 0.9012,
+          "rmse": 1.1301,
+          "bias": -0.1405,
+          "spearman": 0.5364
+        },
+        "kansas": {
+          "n": 4,
+          "mae": 1.3249,
+          "rmse": 1.5271,
+          "bias": -0.2868,
+          "spearman": 0.2
+        },
+        "kansas_transfers": {
+          "n": 3,
+          "mae": 1.0108,
+          "rmse": 1.1816,
+          "bias": 0.3733,
+          "spearman": 0.5
+        }
+      }
+    }
+  },
+  "paired_transfer_mae_improvement": {
+    "comparison": "calibrated production baseline minus selected model",
+    "player_clusters": 2076,
+    "bootstrap_replicates": 2000,
+    "percentile_95_interval": [
+      0.029050613801754336,
+      0.05968961450144865
+    ],
+    "note": "Descriptive player-cluster bootstrap; three held-out seasons do not capture all era uncertainty."
+  }
+}

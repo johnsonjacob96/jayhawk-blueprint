@@ -6,7 +6,7 @@ from math import sqrt, isfinite
 from statistics import median
 import re
 
-VERSION = '0.1.0'
+VERSION = '0.2.0'
 SUCCESS_SEASONS = [2008, 2012, 2018, 2020, 2022]
 # 2018 is on-court performance, including subsequently vacated results.
 COL = {'name':0,'team':1,'conference':2,'games':3,'minutes_share':4,'ortg':5,

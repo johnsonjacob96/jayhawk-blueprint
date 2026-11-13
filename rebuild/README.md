@@ -4,7 +4,7 @@ Kansas-specific college basketball evaluation with an empty starting roster. Cur
 
 ## Run
 
-No Python packages, browser keys, or build framework are required.
+Daily scoring needs no third-party Python packages, browser keys, or build framework. Research retraining uses NumPy; the supplemental private feed uses a server-side credential.
 
 ```sh
 python3 rebuild/build.py --season 2027 --as-of 2026-11-13
@@ -25,7 +25,7 @@ python3 validate.py
 
 The original `index.html` is preserved in `legacy/index.html`. It used embedded Synergy data, manual KU benchmarks and position weights, hard-coded roster needs, three name-specific score overrides, conference-tier translation assumptions and a nonlinear ceiling lift. It had a useful conceptual separation between quality, fit, translation and confidence, but historical calibration was explicitly a future hook.
 
-This version derives profile medians from actual KU player-season statistics. Six explicit, overlapping role rules identify historical examples. Benchmarks are empirical; role gates, equal feature weighting and shrinkage strengths are still provisional modeling choices. No manual name overrides, roster need bonus, recruitment probability, or predicted KU production is included.
+This version derives profile medians from actual KU player-season statistics. Six explicit, overlapping role rules identify historical examples. Benchmarks are empirical; role gates, equal feature weighting and shrinkage strengths are still provisional modeling choices. There are no manual name overrides, roster-need bonuses or recruitment probabilities. v0.2 adds a separate experimental production projection; its outcome test and limits are documented below.
 
 ## Model contract
 
@@ -62,7 +62,7 @@ This is an association diagnostic using full-season, unshrunk inputs, **not vali
 
 1. Expand success definitions to regular-season adjusted strength and deeper KU cohorts; use all other KU seasons as controls. Test sensitivity to era and cohort choice.
 2. Rebuild national transfer labels including unmatched, injured, redshirted and non-rotation outcomes with explicit missingness. Use stable IDs and source-team checks.
-3. Fit a regularized next-year impact model using prior production, age/class, role, competition and destination context; use rolling-season validation against prior-production baselines.
+3. Extend the v0.2 learned impact model to true early-season snapshots, richer opponent context and independently measured defensive impact. Preserve time-ordered baseline comparisons.
 4. Backtest November/December snapshots using only information available at those dates. Tune shrinkage and report uncertainty calibration.
 5. Add licensed Synergy play-type volume and efficiency when accessible. Box-score defense does not establish scheme/film fit.
 6. Turn accumulated daily grade snapshots into version-aware trend views and add roster complementarity tests. Do not substitute a weighted roster average for a team-win forecast.
@@ -75,3 +75,40 @@ KU blue, crimson, warm neutral canvas; locally hosted NCAA Kansas Jayhawks displ
 - Display typeface: NCAA Kansas Jayhawks / The Sports Fonts, https://famfonts.com/kansas-jayhawks/ (download: https://famfonts.com/zips/kansas-jayhawks.zip). Personal research use; no endorsement claimed.
 - Historical cohort context: https://kuathletics.com/documents/download/2024/5/7/G1_KUMBB-Omaha-1.pdf
 - Current season: https://kuathletics.com/sports/mens-basketball/schedule
+
+## Outcome model v0.2 (2026-11-13)
+
+Fit remains historical KU resemblance. **Impact** is a new, separately displayed research estimate of next-season PORPAG, converted to a percentile among currently active players with at least 20% minute share and a source conference represented in training. It is conditional on appearing in the next Division I season, not eligibility or portal availability. The current roster never enters either grade.
+
+`train_outcomes.py` fits ridge regression using 29,873 observed consecutive-season transitions, with origin seasons 2010–2025. Only origin players with >=20% minutes and valid production enter. Player joins require the same Torvik ID and exact name. Missing next-season records are excluded, not assigned zero; the audit counts 18,898 such origin records. This includes graduation, professional departures, sit-outs, coverage/identity gaps and other unknown reasons; it is not a transfer failure count.
+
+Predictors: the same 11 evidence-blended statistical percentiles used for fit, blended PORPAG percentile, height, class, whether the player changes schools, and source/destination conference indicators. Training uses the destination school's conference from the **origin** season, never its future rating or outcome. Live inference uses Kansas's current conference. Conference context is not game-level opponent adjustment. Features are standardized using training rows only; coefficient magnitudes are regularized. A separate Kansas intercept/skill-interaction candidate receives stronger effective shrinkage because its rare indicators are not standardized upward.
+
+Selection used rolling destination-season validation for 2020–2023, choosing penalties from 10, 100, 1000 by transfer mean absolute error. Kansas adjustments had to improve both national-transfer and Kansas validation error. The selected national skills model (penalty 1000) was frozen with training outcomes through 2023 and evaluated once on 2024–2026. The Kansas adjustment did not pass the development gate. After reporting that test, the selected specification was refit through 2026 for the deployed artifact. The final-test results do not describe an independent test of that later refit.
+
+| Frozen-model test, 2024–2026 | Transfers (n=2,412): MAE | Rank correlation | KU transfers (n=11): MAE |
+|---|---:|---:|---:|
+| Carry forward raw PORPAG | 0.9866 | 0.4849 | 1.5135 |
+| Fitted prior-production-only model | 0.9431 | 0.4951 | 1.3798 |
+| Learned skills + context | 0.8984 | 0.5341 | 1.1461 |
+
+The selected model reduced transfer MAE by 4.7% versus the fitted baseline, with improvement in each test year, and 8.9% versus carry-forward. A 2,000-replicate paired player-cluster bootstrap gives a descriptive 95% interval of 0.029–0.060 PORPAG for MAE improvement over the fitted baseline. It does not cover all era/conference uncertainty. KU's 11 held-out transfers are too few to establish reliable program-specific calibration; the model overpredicted them by 0.734 PORPAG on average.
+
+**Full-season test only.** Current November forecasts use the existing early-season blending, which this test does not validate. They are labeled experimental in the board, player details and CSV. This predicts a production proxy, not team wins, true defensive impact or individual success probability. Features are correlated: a small or negative partial shooting coefficient does not mean shooting is undesirable. Displayed contributions are associations relative to training means, not causal effects or percentages summing to 100.
+
+Reproduce with NumPy available:
+
+```bash
+python3 rebuild/train_outcomes.py
+python3 rebuild/build.py --season 2027 --as-of 2026-11-13
+cd rebuild
+python3 -m unittest discover -s tests -v
+```
+
+Training requires the private cached Torvik seasons 2008–2026 in `rebuild/data/raw/`. `outcome-report.json` records source hashes, coverage audit, tuning folds, frozen-test results and limitations. `outcome-model.json` contains portable coefficients; daily scoring uses only Python's standard library. Dated grade filenames now include both model version and coefficient hash, retaining separate experiments on the same source snapshot.
+
+## Supplemental game-log corpus
+
+`fetch_cbbd.py --season 2027 --team Kansas` stores timestamped CollegeBasketballData responses privately under ignored `rebuild/data/cbbd/`. It validates season/team, duplicate identities and shooting counts; it counts empty/unplayed game rows separately. Event-time slicing requires a timezone-aware cutoff. Retrospective data can include later source corrections, so these are not proven historical publication-time snapshots.
+
+Authentication: `CBD_API_KEY` or the macOS Keychain service `jayhawk-blueprint.cbbd`, account `api`. Never put the key or raw response corpus in the public repo. The daily 6:15 Central job adds one Kansas request (~31/month) alongside the national Torvik refresh. A supplemental fetch failure is logged; it does not block independently sourced public grades. **CBBD does not enter grades yet.** Source research, availability and coverage issues: [data-sources.md](data-sources.md).
