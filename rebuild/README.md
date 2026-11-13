@@ -45,7 +45,7 @@ Public source: `https://barttorvik.com/getadvstats.php?year=YYYY` (season-ending
 
 `data/raw/` holds current cached payloads and provenance/hash sidecars. Refreshes preserve dated source payloads in `data/snapshots/`. `data/grades/` holds dated compact grade exports. Rebuilding is deterministic for fixed source bytes and model version. Files under `web/` are deployable static output. No secret is embedded in the application.
 
-GitHub Actions refreshes daily at 12:15 UTC (6:15 a.m. CST / 7:15 a.m. CDT) and supports manual execution. It preserves compressed grade snapshots in the repository and raw-source artifacts for 90 days. A failed refresh does not publish a newly dated stale board. `data.js` keeps its source snapshot date visible. Automated schedule execution and upstream source uptime are not guaranteed.
+A macOS LaunchAgent (`com.jarvis.jayhawk-blueprint-refresh`) runs `rebuild/refresh.sh` daily at 6:15 a.m. machine-local time (currently Central). It fetches data using the existing public endpoint, saves source payloads locally, commits compressed grade history, and pushes through existing GitHub CLI/git authentication. GitHub Actions then publishes the verified static export. The source returned HTTP 403 from GitHub-hosted runners, so cloud ingestion is not enabled. Refresh requires this Mac and its network/authentication to be available; the last successful snapshot date stays visible when a refresh fails. The refresh refuses to run across tracked uncommitted changes. Source payload retention is local; compressed grade snapshots are committed to the repository.
 
 ## Initial validation
 

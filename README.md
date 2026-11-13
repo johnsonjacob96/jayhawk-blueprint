@@ -7,7 +7,7 @@ A Kansas basketball scouting board and roster lab. Evaluate current college play
 - KU blue/crimson design with Kansas circus-style display type and Jayhawk branding.
 - National player search, six historical role profiles, quality and confidence shown separately.
 - Player comparisons, watchlists, roster roles and 200-minute allocation, CSV exports.
-- Daily source refresh with dated grade archives; all grades remain research-stage.
+- Daily Mac-based source refresh with dated grade archives; all grades remain research-stage.
 - No returning players, transfer availability or future eligibility assumed.
 
 Implementation, methodology, limits and validation: [rebuild/README.md](rebuild/README.md).

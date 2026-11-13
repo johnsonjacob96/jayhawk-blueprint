@@ -1,21 +1,19 @@
-name: Refresh Kansas scouting board
+name: Publish Kansas scouting board
 on:
   push:
     branches: [main]
-  schedule:
-    - cron: '15 12 * * *'
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 concurrency:
-  group: blueprint-refresh
+  group: blueprint-pages
   cancel-in-progress: false
 jobs:
-  refresh:
+  publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -24,35 +22,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - uses: actions/cache@v4
-        with:
-          path: rebuild/data/raw
-          key: blueprint-raw-v1-${{ github.run_id }}
-          restore-keys: blueprint-raw-v1-
-      - name: Verify model
-        working-directory: rebuild
-        run: python -m unittest discover -s tests -v
-      - name: Refresh source and build
+      - name: Verify model and application
         run: |
-          SNAPSHOT_DATE=$(TZ=America/Chicago date +%F)
-          python rebuild/build.py --season 2027 --as-of "$SNAPSHOT_DATE" --refresh
-          node --check rebuild/web/app.js
-          python rebuild/publish.py
-      - name: Retain source snapshot
-        uses: actions/upload-artifact@v4
-        with:
-          name: blueprint-source-${{ github.run_id }}
-          path: rebuild/data/snapshots/
-          retention-days: 90
-      - name: Save refreshed board
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html styles.css app.js data.js assets rebuild/history
-          if ! git diff --cached --quiet; then
-            git commit -m 'Refresh Kansas player evaluation snapshot'
-            git push
-          fi
+          cd rebuild
+          python -m unittest discover -s tests -v
+          node --check web/app.js
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Stage public assets only
