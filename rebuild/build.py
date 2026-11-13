@@ -4,7 +4,7 @@ import argparse, hashlib, json, urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from blueprint.model import parse,evaluate,VERSION,SUCCESS_SEASONS,ROLES,LABELS,distribution,percentile
-from blueprint.outcomes import inputs,predict,explain,ku_transfer_adjustment
+from blueprint import independent as I, external as E
 ROOT=Path(__file__).resolve().parent
 
 def main():
@@ -35,57 +35,72 @@ def main():
     meta=json.loads((rawdir/f'{args.season}.meta.json').read_text())
     if meta['as_of']!=args.as_of: raise ValueError('Cached date differs; use --refresh (never relabel stale data)')
     players,profiles=evaluate(seasons,args.season)
-    artifact_path=ROOT/'outcome-model.json'
+    artifact_path=ROOT/'independent-model.json'
     artifact=json.loads(artifact_path.read_text())
-    if artifact['trained_through']>=args.season:
-        raise ValueError('Outcome artifact includes target input season; retrain with an earlier cutoff')
-    report=json.loads((ROOT/'outcome-report.json').read_text())
-    current={p['id']:p for p in seasons[args.season]}
-    previous={p['id']:p for p in seasons[args.season-1]}
-    dist=distribution(list(current.values())); pdist=distribution(list(previous.values()))
-    ku_conferences={p['conference'] for p in current.values() if p['team']=='Kansas'}
-    if len(ku_conferences)!=1: raise ValueError('Kansas conference context missing or ambiguous')
-    ku_conference=next(iter(ku_conferences))
+    if artifact['trained_through']>=args.season:raise ValueError('Training includes input season')
+    report=json.loads((ROOT/'independent-report.json').read_text())
+    national=I.load(args.season);previous=I.load(args.season-1)
+    matches,team_map=I.crosswalk(seasons[args.season],national)
+    prior=I.unique_players(previous)
+    ku=[r['teamId'] for r in national['ratings'].values() if r['team']=='Kansas']
+    if len(ku)!=1:raise ValueError('Ambiguous Kansas destination')
+    external_current=E.load(args.season);external_prior=E.load(args.season-1)
     for output in players:
-        p=current[output['id']]; prior=previous.get(p['id'])
-        if prior and prior['name']!=p['name']: prior=None
-        eligible=p['minutes_share']>=20 and p['games']>0 and 'source:'+p['conference'] in artifact['features']
-        output['projection']=None;output['impact']=None
-        if eligible:
-            values=inputs(p,prior,dist,pdist,ku_conference)
-            output['projection']={'porpag':round(predict(values,artifact),3),
-                                  'ku_adjustment':round(ku_transfer_adjustment(values,artifact),3),
-                                  'drivers':explain(values,artifact),
-                                  'status':'Experimental: early-season inputs not validated'}
-    reference=sorted(p['projection']['porpag'] for p in players if p['projection'])
-    for p in players:
-        if p['projection']:p['impact']=round(100*percentile(p['projection']['porpag'],reference),1)
-    selected=report['selected']['variant']
+        output.update(projection=None,impact=None,efficiency=None,external_impact=None,source_match=False)
+        p=matches.get(output['id'])
+        if p:
+            output['source_match']=True
+            output['external_impact']=E.evidence(p,args.season,external_current,external_prior)
+            output['efficiency']={k:round(v,2) if v is not None else None for k,v in p['m'].items()}
+            output['efficiency']['estimated_possessions']=round(p['poss'],1) if p['poss'] else None
+            old=prior.get(p['athleteId'])
+            if old and I.name_key(old['name'])!=I.name_key(p['name']):old=None
+            values,context=I.inputs(p,old,national,previous,ku[0])
+            if values and (p['m']['minute_share'] or 0)>=20 and p['games']>0:
+                value=I.predict(values,artifact)
+                output['impact']=round(100*percentile(value,artifact['outcome_reference']),1)
+                contributions=[{'feature':k,'contribution':round((values[k]-artifact['means'][i])*c,3)} for i,(k,c) in enumerate(zip(artifact['features'],artifact['coefficients']))]
+                output['projection']={'porpag':round(value,3),'provider':'CBBD','context':context,
+                                      'drivers':sorted(contributions,key=lambda d:abs(d['contribution']),reverse=True)[:4],
+                                      'status':'Experimental: November inputs have not been validated'}
+        output['grade']={r:I.combined(output['impact'],output['fit'][r],profiles[r]['supported']) for r in ROLES}
     outcome_summary={'version':artifact['version'],'trained_through':artifact['trained_through'],
                      'model_sha256':hashlib.sha256(artifact_path.read_bytes()).hexdigest(),
-                     'training_rows':artifact['training_rows'],'variant':selected,
-                     'test_years':report['test_years'],'test':report['test'][selected],
-                     'baseline':report['test']['production'],'carry_forward':report['test']['carry_forward'],
+                     'training_rows':artifact['training_rows'],'variant':report['selected']['variant'],
+                     'test_years':report['check_years'],'test':report['selected']['metrics'],
+                     'baseline':report['baseline']['metrics'],'ku_transfers':report['ku_transfers'],
                      'early_season_validated':False,'target':artifact['target'],
-                     'reference_count':len(reference),
-                     'ku_transfer_calibration':report.get('ku_transfer_calibration'),
-                     'kansas_adjustment':selected=='kansas' or bool(artifact.get('ku_transfer_calibration',{}).get('enabled'))}
+                     'reference_count':len(artifact['outcome_reference']),
+                     'status':report['status'],'kansas_adjustment':False}
+    source_audit={'matched':len(matches),'unmatched':len(players)-len(matches),'team_mappings':len(team_map),
+                  'external_matches':sum(p['external_impact'] is not None for p in players),
+                  'rapm_seasons':sorted({p['external_impact']['season'] for p in players if p['external_impact']}),
+                  'national':{k:json.loads((ROOT/f'data/cbbd/national/{args.season}/{k}.meta.json').read_text()) for k in ['players','teams','ratings']},
+                  'rapm_availability':json.loads((E.ROOT/'availability.json').read_text()) if (E.ROOT/'availability.json').exists() else None}
+    source_audit['external_files']={p.name:json.loads(p.read_text()) for p in E.ROOT.glob('*.meta.json')}
+    manifest={str(p.relative_to(ROOT/'data')):json.loads(p.read_text())['sha256'] for p in (ROOT/'data').glob('raw/*.meta.json')}
+    for y in [args.season-1,args.season]:
+        manifest.update({str(p.relative_to(ROOT/'data')):json.loads(p.read_text())['sha256'] for p in (ROOT/f'data/cbbd/national/{y}').glob('*.meta.json')})
+    manifest.update({str(p.relative_to(ROOT/'data')):json.loads(p.read_text())['sha256'] for p in E.ROOT.glob('*.meta.json')})
+    source_audit['input_manifest']=manifest
+    source_fingerprint=hashlib.sha256(json.dumps(manifest,sort_keys=True).encode()).hexdigest()
+    source_audit['input_sha256']=source_fingerprint
     result={'version':VERSION,'as_of':args.as_of,'season':args.season,'target_season':args.season+1,
-            'outcomes':outcome_summary,
+            'outcomes':outcome_summary,'source_audit':source_audit,
             'history_seasons':[y for y in years if y<args.season],
             'source':meta,'players':players,'profiles':profiles,'roles':ROLES,'labels':LABELS,
             'teams':len(set(p['team'] for p in players)),
-            'limits':['Outcome model tested on full-season historical inputs; early-season projections remain experimental.',
-                      'Fit is resemblance, not predicted performance or recruiting availability.',
+            'limits':['Model selected with chronological full-season checks; not an independent test. November forecasts remain experimental.',
+                      'KU grade = 80% projected production percentile + 20% role resemblance; a preference index, not a success probability.',
                       'Current roster is empty by design; eligibility and portal status are unverified.',
                       'Box-score defensive proxies do not measure scheme execution or film traits.']}
     out=ROOT/'web';out.mkdir(exist_ok=True)
     payload=json.dumps(result,separators=(',',':'),allow_nan=False).replace('</','<\\/')
     (out/'data.js').write_text('window.BLUEPRINT='+payload+';\n')
     history=ROOT/'data/grades';history.mkdir(exist_ok=True)
-    compact={'as_of':args.as_of,'version':VERSION,'source_hash':meta['sha256'],
+    compact={'as_of':args.as_of,'version':VERSION,'source_hash':source_fingerprint,'input_manifest':manifest,
              'outcome_model_hash':outcome_summary['model_sha256'],
-             'players':[{k:p[k] for k in ['id','name','team','fit','quality','confidence','impact','projection']} for p in players]}
-    (history/f'{args.as_of}-{meta["sha256"][:10]}-v{VERSION}-{outcome_summary["model_sha256"][:8]}.json').write_text(json.dumps(compact))
+             'players':[{k:p[k] for k in ['id','name','team','fit','grade','quality','confidence','impact','projection','external_impact']} for p in players]}
+    (history/f'{args.as_of}-{source_fingerprint[:10]}-v{VERSION}-{outcome_summary["model_sha256"][:8]}.json').write_text(json.dumps(compact))
     print(json.dumps({'players':len(players),'teams':result['teams'],'profiles':{k:p['count'] for k,p in profiles.items()},'output':str(out/'index.html')},indent=2))
 if __name__=='__main__':main()

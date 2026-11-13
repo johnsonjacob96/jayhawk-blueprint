@@ -6,7 +6,7 @@ from math import sqrt, isfinite
 from statistics import median
 import re
 
-VERSION = '0.3.0'
+VERSION = '0.4.0'
 SUCCESS_SEASONS = [2008, 2012, 2018, 2020, 2022]
 # 2018 is on-court performance, including subsequently vacated results.
 COL = {'name':0,'team':1,'conference':2,'games':3,'minutes_share':4,'ortg':5,
@@ -109,7 +109,7 @@ def qualifies(p,role):
     if role=='scorer': return h<=80 and u is not None and u>=22
     if role=='wing': return 76<=h<=82 and t is not None and t>=25
     if role=='connector': return 77<=h<=82 and a is not None and a>=12
-    if role=='stretch': return h>=80 and t is not None and t>=15 and p['three_a']>=30
+    if role=='stretch': return h>=80 and p.get('position') in {'Stretch 4','PF/C','C'} and t is not None and t>=15 and p['three_a']>=30
     if role=='anchor': return h>=80 and t is not None and t<15
     return False
 
@@ -128,11 +128,11 @@ def fit_profiles(seasons, before=None):
                     member={**p,'v':vector(p,dist)}
                     comparison_members.append(member)
                     if y in years: members.append(member)
-        if len(members)<2: continue
+        if not members: continue
         keys=settings['features']
         center={k:median(m['v'][k] for m in members if m['v'][k] is not None) for k in keys}
         profiles[role]={'label':settings['label'],'features':keys,'center':center,'members':members,
-                        'comparison_members':comparison_members,
+                        'comparison_members':comparison_members,'supported':len({m['id'] for m in members})>=3,
                         'raw_medians':{k:median(m[k] for m in members if m[k] is not None) for k in keys}}
     return profiles
 
@@ -141,14 +141,31 @@ def distance(v, target, keys):
     if not available: return 1.0
     return sqrt(sum((v[k]-target[k])**2 for k in available)/len(available))
 
-def assess(v,profiles):
+def assess(v,profiles,player=None,style=None,confidence=100):
     scores={}; comps={}
+    style=style or player
     for role,profile in profiles.items():
         scores[role]=max(0,100*(1-distance(v,profile['center'],profile['features'])))
-        nearest=sorted(profile.get('comparison_members',profile['members']),key=lambda m:distance(v,m['v'],profile['features']))[:3]
-        comps[role]=[{'name':m['name'],'season':int(m['season']),
-                     'benchmark':int(m['season']) in SUCCESS_SEASONS,
-                     'similarity':round(100*(1-distance(v,m['v'],profile['features'])),1)} for m in nearest]
+        candidates=[]
+        if player and style and confidence>=25 and player.get('height_inches') is not None:
+            for m in profile.get('comparison_members',profile['members']):
+                # Size, responsibility and shot mix are eligibility gates, not tiny penalties.
+                if abs(player['height_inches']-m['height_inches'])>2:continue
+                if any(style.get(k) is None or m.get(k) is None or abs(style[k]-m[k])>limit for k,limit in [('usage',7),('three_rate',20)]):continue
+                d=distance(v,m['v'],FEATURES)
+                if d>.25:continue
+                candidates.append((d,m))
+        seen=set();nearest=[]
+        for d,m in sorted(candidates,key=lambda x:x[0]):
+            if m['name'] in seen:continue
+            seen.add(m['name'])
+            nearest.append({'name':m['name'],'season':int(m['season']),
+                            'benchmark':int(m['season']) in SUCCESS_SEASONS,
+                            'similarity':round(100*(1-d),1),
+                            'reason':f"{m['height']} · {m['usage']:.1f}% usage · {m['three_rate']:.1f}% of shots from three",
+                            'differences':[{'feature':k,'percentile_gap':round((v[k]-m['v'][k])*100,1)} for k in sorted(FEATURES,key=lambda k:abs(v[k]-(m['v'].get(k) if m['v'].get(k) is not None else v[k])),reverse=True)[:2] if m['v'].get(k) is not None]})
+            if len(nearest)==3:break
+        comps[role]=nearest
     return scores,comps
 
 def evaluate(seasons,target):
@@ -162,22 +179,24 @@ def evaluate(seasons,target):
         old=prev.get(p['id'])
         if old and old['name']!=p['name']: old=None
         v,confidence=blend(p,old,dist,pdist)
-        raw,comps=assess(v,profiles)
+        style=old if old and p['estimated_minutes']<300 else p
+        raw,comps=assess(v,profiles,p,style,confidence)
         outputs.append({'id':p['id'],'name':p['name'],'team':p['team'],'conference':p['conference'],
                         'class':p['class'],'height':p['height'],'position':p['position'],
+                        'comparison_basis':'Prior season' if style is old else 'Current season',
                         'games':int(p['games']),'confidence':confidence,'quality':round(v['porpag']*100),
                         'prior_team':old['team'] if old else None,'prior_season':target-1 if old else None,
                         'raw_similarity':raw,'comparisons':comps,'features':{k:round(v[k]*100,1) for k in FEATURES},
                         'stats':{k:p[k] for k in FEATURES+['minutes_share','porpag','three_a','three_m']},
                         'portal_status':'Not assessed','eligibility':'Unverified',
-                        'fit':{r:round(raw[r],1) if p['games']>0 and role_eligible(p,r) else None for r in profiles}})
+                        'fit':{r:round(raw[r],1) if p['games']>0 and role_eligible(p,r) and profiles[r]['supported'] and (r not in ['anchor','stretch'] or qualifies(style,r)) else None for r in profiles}})
     # Absolute resemblance, never stretched to fill a percentile scale. Missing
     # height/no appearances leave a player unrated rather than assigning a role.
     for p in outputs:
         eligible=[r for r,v in p['fit'].items() if v is not None]
         p['best_role']=max(eligible,key=lambda r:p['fit'][r]) if eligible else None
         p['raw_similarity']={r:round(v,1) for r,v in p['raw_similarity'].items()}
-    summary={r:{'label':p['label'],'count':len(p['members']),'seasons':sorted(set(int(m['season']) for m in p['members'])),
+    summary={r:{'label':p['label'],'supported':p['supported'],'count':len(p['members']),'seasons':sorted(set(int(m['season']) for m in p['members'])),
                 'comparison_count':len(p['comparison_members']),
                 'comparison_members':[{'id':m['id'],'name':m['name'],'season':int(m['season']),
                                        'porpag':round(m['porpag'],2) if m['porpag'] is not None else None,

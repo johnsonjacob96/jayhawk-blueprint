@@ -15,11 +15,13 @@ fi
 trap 'rmdir "$LOCK_DIR"' EXIT
 git pull --ff-only origin main
 SNAPSHOT_DATE="$(/usr/bin/python3 -c 'from datetime import datetime; from zoneinfo import ZoneInfo; print(datetime.now(ZoneInfo("America/Chicago")).date().isoformat())')"
+/usr/bin/python3 rebuild/fetch_national.py --season 2027 --refresh
+/usr/bin/python3 rebuild/fetch_sportsdataverse.py --season 2027
 /usr/bin/python3 rebuild/build.py --season 2027 --as-of "$SNAPSHOT_DATE" --refresh
 # Supplemental private corpus: one Kansas game-log request/day. A failure here
-# is logged explicitly and does not block independently sourced Torvik grades.
+# is logged explicitly and does not block national season-stat grades.
 if ! /usr/bin/python3 rebuild/fetch_cbbd.py --season 2027 --team Kansas; then
-  printf 'WARNING: CBBD research corpus refresh failed; public grades use Torvik only.\n' >&2
+  printf 'WARNING: CBBD research corpus refresh failed; national season-stat grades are unaffected.\n' >&2
 fi
 node --check rebuild/web/app.js
 /usr/bin/python3 rebuild/publish.py

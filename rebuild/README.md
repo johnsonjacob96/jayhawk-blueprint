@@ -2,11 +2,31 @@
 
 Kansas-specific college basketball evaluation with an empty starting roster. Current evidence: 2026–27. Planning horizon: 2027–28. The owner explicitly chose **zero assumed returners** on 2026-11-13; evaluate the whole national pool, not only announced transfers.
 
+## Current model — v0.4.0
+
+The live production predictor now uses **CBBD only**, independently of Torvik inputs. Torvik still supplies KU historical resemblance, the board universe and the separately labeled current-quality filter. SportsDataverse NCAA league-wide RAPM provides a second, retrospective impact view. These providers may share underlying game data; they are not independent statistical replications.
+
+- **KU grade:** 80% predicted-production percentile + 20% role resemblance. Explicit scouting preference, not empirically learned weights or a success probability. Production percentiles use the completed-outcome reference in `independent-model.json`.
+- **Per possession:** points, assists, turnovers, rebounds, steals and blocks per 100 estimated on-court possessions. Denominator = team possessions × player minutes / team clock minutes. True shooting/eFG/usage retain their own denominators. This is not exact substitution tracking.
+- **Moving up:** continuous origin-season source/destination conference net-strength gap and interactions with usage/efficiency. No future destination ratings. Model selected on chronological 2020–2026 folds; final fit uses every matched outcome through 2026. No permanent holdout. Early-season performance remains unvalidated.
+- **Evidence:** CBBD values shrink with possessions/(possessions+500), with same-ID/name prior-season evidence discounted to 65%. Raw per-100 values are shown separately from blended model inputs.
+- **Comparisons:** size within 2 inches, usage within 7 points, three-point attempt share within 20 points, all-feature RMS ≤0.25, evidence ≥25; no duplicate player names or forced three matches. Gates use prior-season usage/shot mix until 300 estimated current minutes when prior evidence exists.
+- **Bigs:** Svi is no longer a spacing-big benchmark. Only source positions Stretch 4/PF/C/C qualify for that historical role. Fewer than 3 distinct benchmark players prevents grading; the remaining one-player spacing cohort is reference-only. Anchor candidates require an interior shot pattern, using the same prior/current basis.
+- **Additional impact evidence:** SportsDataverse's 2026 RAPM file contains 4,974 rows. Official NCAA→ESPN aliases join to CBBD's ESPN source ID with season bounds, unique identities and confidence 1.0. Current build: 2,562 matched players. No 2027 file is currently published. Missing and prior-season evidence are labeled; RAPM does not enter grades until incremental predictive value is tested.
+- **Coverage:** 4,365 / 4,534 verified Torvik→CBBD current matches; 169 remain unmatched and get no production grade. Player-name joins require verified team context. No fuzzy fallback. Source-specific confidence and dates remain visible.
+
+Chronological model-selection metrics (CBBD PORPAG): transfers n=4,080, MAE 0.9282 → 0.8550; moving-up transfers n=1,142, MAE 0.9724 → 0.8456. Only 16 KU transfers are checked. These are tuning metrics, not an independent test. The old Torvik KU offset is not applied to a different target. See `independent-report.json`; rebuild with `python3 rebuild/train_independent.py` after fetching historical CBBD data.
+
+The older v0.2/v0.3 model sections below are retained as development history; their accuracy claims and calibration do not describe v0.4.
+
 ## Run
 
-Daily scoring needs no third-party Python packages, browser keys, or build framework. Research retraining uses NumPy; the supplemental private feed uses a server-side credential.
+Daily scoring needs no third-party Python packages, browser keys, or build framework. Research retraining uses NumPy; the CBBD predictor feed uses a server-side credential.
 
 ```sh
+python3 rebuild/fetch_national.py --season 2026
+python3 rebuild/fetch_national.py --season 2027 --refresh
+python3 rebuild/fetch_sportsdataverse.py --season 2027
 python3 rebuild/build.py --season 2027 --as-of 2026-11-13
 python3 -m http.server 8000 --directory rebuild/web
 ```
@@ -68,7 +88,8 @@ This is an association diagnostic using full-season, unshrunk inputs, **not vali
 
 ## Next research priorities
 
-1. Expand success definitions to regular-season adjusted strength and deeper KU cohorts; use all other KU seasons as controls. Test sensitivity to era and cohort choice.
+1. Backtest newly verified SportsDataverse lineup/possession features and obtain shot-pattern context from the external sources in [data-sources.md](data-sources.md).
+2. Expand success definitions to regular-season adjusted strength and deeper KU cohorts; use all other KU seasons as controls. Test sensitivity to era and cohort choice.
 2. Rebuild national transfer labels including unmatched, injured, redshirted and non-rotation outcomes with explicit missingness. Use stable IDs and source-team checks.
 3. Extend the v0.2 learned impact model to true early-season snapshots, richer opponent context and independently measured defensive impact. Preserve time-ordered baseline comparisons.
 4. Backtest November/December snapshots using only information available at those dates. Tune shrinkage and report uncertainty calibration.
@@ -119,7 +140,7 @@ Training requires the private cached Torvik seasons 2008–2026 in `rebuild/data
 
 `fetch_cbbd.py --season 2027 --team Kansas` stores timestamped CollegeBasketballData responses privately under ignored `rebuild/data/cbbd/`. It validates season/team, duplicate identities and shooting counts; it counts empty/unplayed game rows separately. Event-time slicing requires a timezone-aware cutoff. Retrospective data can include later source corrections, so these are not proven historical publication-time snapshots.
 
-Authentication: `CBD_API_KEY` or the macOS Keychain service `jayhawk-blueprint.cbbd`, account `api`. Never put the key or raw response corpus in the public repo. The daily 6:15 Central job adds one Kansas request (~31/month) alongside the national Torvik refresh. A supplemental fetch failure is logged; it does not block independently sourced public grades. **CBBD does not enter grades yet.** Source research, availability and coverage issues: [data-sources.md](data-sources.md).
+Authentication: `CBD_API_KEY` or the macOS Keychain service `jayhawk-blueprint.cbbd`, account `api`. Never put the key or raw response corpus in the public repo. The daily 6:15 Central job adds one Kansas request (~31/month) alongside the national Torvik refresh. A supplemental fetch failure is logged; it does not block independently sourced public grades. **Historical note: superseded in v0.4, where national CBBD data powers projections.** Source research, availability and coverage issues: [data-sources.md](data-sources.md).
 
 ## Kansas history comparisons v0.2.1
 

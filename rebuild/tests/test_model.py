@@ -39,14 +39,16 @@ class ModelTests(unittest.TestCase):
   self.assertEqual(len(expanded['members']),2)
   self.assertEqual({p['season'] for p in expanded['comparison_members']},{2008,2024,2025,2026})
  def test_nearest_comparison_can_come_from_recent_season(self):
-  profile={'features':['ast'],'center':{'ast':.8},
-           'members':[{'name':'Benchmark','season':2008,'v':{'ast':.8}}],
-           'comparison_members':[{'name':'Benchmark','season':2008,'v':{'ast':.8}},
-                                 {'name':'Recent KU player','season':2026,'v':{'ast':.2}}]}
-  scores,comps=assess({'ast':.2},{'organizer':profile})
+  def member(name,year,height=78,usage=20):
+   return {'name':name,'season':year,'height_inches':height,'height':'6-6','usage':usage,'three_rate':30,'v':{k:.2 for k in FEATURES}}
+  profile={'features':['ast'],'center':{'ast':.8},'members':[],
+           'comparison_members':[member('Wrong size',2008,85),member('Wrong job',2008,78,35),member('Recent KU player',2026)]}
+  candidate={'height_inches':78,'usage':20,'three_rate':30}
+  scores,comps=assess({k:.2 for k in FEATURES},{'organizer':profile},candidate)
   self.assertAlmostEqual(scores['organizer'],40)
-  self.assertEqual(comps['organizer'][0]['name'],'Recent KU player')
+  self.assertEqual([c['name'] for c in comps['organizer']],['Recent KU player'])
   self.assertFalse(comps['organizer'][0]['benchmark'])
+  self.assertEqual(assess({k:.2 for k in FEATURES},{'organizer':profile},candidate,confidence=10)[1]['organizer'],[])
  def test_role_bounds_include_edges_and_reject_missing_height(self):
   self.assertFalse(role_eligible({'height_inches':73},'connector'))
   self.assertFalse(role_eligible({'height_inches':76},'stretch'))
@@ -59,10 +61,10 @@ class ModelTests(unittest.TestCase):
            'team':'Kansas','season':year,'height_inches':h,'height':'6-1',
            'games':30,'minutes_share':70,'three_a':50,'three_m':15,'two_a':100,'fta':50,
            'estimated_minutes':840,'usage':25,'ast':25,'three_rate':three,
-           'conference':'B12','class':'Jr','position':'G'}
-  history=[player(str(i),h,2008,t) for i,(h,t) in enumerate([(78,30),(78,30),(82,30),(82,30),(82,10),(82,10)])]
+           'conference':'B12','class':'Jr','position':'Stretch 4' if h and h>=80 else 'G'}
+  history=[player(str(i),h,2008,t) for i,(h,t) in enumerate([(78,30)]*3+[(82,30)]*3+[(82,10)]*3)]
   guard=player('Guard',73,2027);guard['ast']=90
-  big=player('Big',84,2027);big['ast']=5
+  big=player('Big',84,2027,10);big['ast']=5
   missing=player('Missing height',None,2027)
   absent=player('No appearances',78,2027);absent['games']=0
   outputs,_=evaluate({2008:history,2027:[guard,big,missing,absent]},2027)

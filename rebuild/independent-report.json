@@ -1,0 +1,641 @@
+{
+  "version": "independent-1",
+  "provider": "CollegeBasketballData",
+  "training_rows": 21430,
+  "trained_through": 2026,
+  "check_years": [
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "selected": {
+    "variant": "translation",
+    "penalty": 1000.0,
+    "metrics": {
+      "all": {
+        "n": 14299,
+        "mae": 0.7849,
+        "rmse": 1.013,
+        "bias": -0.0631,
+        "spearman": 0.5877
+      },
+      "transfers": {
+        "n": 4080,
+        "mae": 0.855,
+        "rmse": 1.0953,
+        "bias": -0.1506,
+        "spearman": 0.4446
+      },
+      "step_up": {
+        "n": 1142,
+        "mae": 0.8456,
+        "rmse": 1.0989,
+        "bias": -0.2677,
+        "spearman": 0.4318
+      },
+      "kansas_transfers": {
+        "n": 16,
+        "mae": 0.9811,
+        "rmse": 1.2412,
+        "bias": 0.742,
+        "spearman": 0.4033
+      }
+    }
+  },
+  "baseline": {
+    "variant": "production",
+    "penalty": 1000.0,
+    "metrics": {
+      "all": {
+        "n": 14299,
+        "mae": 0.8199,
+        "rmse": 1.0572,
+        "bias": -0.0531,
+        "spearman": 0.5409
+      },
+      "transfers": {
+        "n": 4080,
+        "mae": 0.9282,
+        "rmse": 1.1866,
+        "bias": -0.0967,
+        "spearman": 0.3598
+      },
+      "step_up": {
+        "n": 1142,
+        "mae": 0.9724,
+        "rmse": 1.215,
+        "bias": 0.4712,
+        "spearman": 0.4168
+      },
+      "kansas_transfers": {
+        "n": 16,
+        "mae": 1.2574,
+        "rmse": 1.5171,
+        "bias": 1.0874,
+        "spearman": 0.4463
+      }
+    }
+  },
+  "candidates": [
+    {
+      "variant": "production",
+      "penalty": 10.0,
+      "metrics": {
+        "all": {
+          "n": 14299,
+          "mae": 0.8203,
+          "rmse": 1.0597,
+          "bias": -0.0555,
+          "spearman": 0.5423
+        },
+        "transfers": {
+          "n": 4080,
+          "mae": 0.9409,
+          "rmse": 1.2041,
+          "bias": -0.111,
+          "spearman": 0.3631
+        },
+        "step_up": {
+          "n": 1142,
+          "mae": 0.9853,
+          "rmse": 1.2381,
+          "bias": 0.4827,
+          "spearman": 0.4171
+        },
+        "kansas_transfers": {
+          "n": 16,
+          "mae": 1.3025,
+          "rmse": 1.5694,
+          "bias": 1.1324,
+          "spearman": 0.4463
+        }
+      }
+    },
+    {
+      "variant": "production",
+      "penalty": 100.0,
+      "metrics": {
+        "all": {
+          "n": 14299,
+          "mae": 0.8201,
+          "rmse": 1.0592,
+          "bias": -0.0552,
+          "spearman": 0.5422
+        },
+        "transfers": {
+          "n": 4080,
+          "mae": 0.9394,
+          "rmse": 1.2022,
+          "bias": -0.1096,
+          "spearman": 0.3629
+        },
+        "step_up": {
+          "n": 1142,
+          "mae": 0.9838,
+          "rmse": 1.2356,
+          "bias": 0.4816,
+          "spearman": 0.417
+        },
+        "kansas_transfers": {
+          "n": 16,
+          "mae": 1.298,
+          "rmse": 1.564,
+          "bias": 1.128,
+          "spearman": 0.4463
+        }
+      }
+    },
+    {
+      "variant": "production",
+      "penalty": 1000.0,
+      "metrics": {
+        "all": {
+          "n": 14299,
+          "mae": 0.8199,
+          "rmse": 1.0572,
+          "bias": -0.0531,
+          "spearman": 0.5409
+        },
+        "transfers": {
+          "n": 4080,
+          "mae": 0.9282,
+          "rmse": 1.1866,
+          "bias": -0.0967,
+          "spearman": 0.3598
+        },
+        "step_up": {
+          "n": 1142,
+          "mae": 0.9724,
+          "rmse": 1.215,
+          "bias": 0.4712,
+          "spearman": 0.4168
+        },
+        "kansas_transfers": {
+          "n": 16,
+          "mae": 1.2574,
+          "rmse": 1.5171,
+          "bias": 1.0874,
+          "spearman": 0.4463
+        }
+      }
+    },
+    {
+      "variant": "efficiency",
+      "penalty": 10.0,
+      "metrics": {
+        "all": {
+          "n": 14299,
+          "mae": 0.8062,
+          "rmse": 1.0408,
+          "bias": -0.0204,
+          "spearman": 0.5638
+        },
+        "transfers": {
+          "n": 4080,
+          "mae": 0.9291,
+          "rmse": 1.1853,
+          "bias": -0.0667,
+          "spearman": 0.3792
+        },
+        "step_up": {
+          "n": 1142,
+          "mae": 0.9911,
+          "rmse": 1.2353,
+          "bias": 0.5321,
+          "spearman": 0.4273
+        },
+        "kansas_transfers": {
+          "n": 16,
+          "mae": 1.2498,
+          "rmse": 1.5432,
+          "bias": 1.1274,
+          "spearman": 0.4908
+        }
+      }
+    },
+    {
+      "variant": "efficiency",
+      "penalty": 100.0,
+      "metrics": {
+        "all": {
+          "n": 14299,
+          "mae": 0.8061,
+          "rmse": 1.0407,
+          "bias": -0.0223,
+          "spearman": 0.5636
+        },
+        "transfers": {
+          "n": 4080,
+          "mae": 0.9282,
+          "rmse": 1.1839,
+          "bias": -0.0669,
+          "spearman": 0.3789
+        },
+        "step_up": {
+          "n": 1142,
+          "mae": 0.9894,
+          "rmse": 1.2327,
+          "bias": 0.5301,
+          "spearman": 0.4274
+        },
+        "kansas_transfers": {
+          "n": 16,
+          "mae": 1.245,
+          "rmse": 1.5385,
+          "bias": 1.1217,
+          "spearman": 0.4566
+        }
+      }
+    },
+    {
+      "variant": "efficiency",
+      "penalty": 1000.0,
+      "metrics": {
+        "all": {
+          "n": 14299,
+          "mae": 0.8074,
+          "rmse": 1.0413,
+          "bias": -0.0307,
+          "spearman": 0.561
+        },
+        "transfers": {
+          "n": 4080,
+          "mae": 0.9221,
+          "rmse": 1.1741,
+          "bias": -0.0622,
+          "spearman": 0.3753
+        },
+        "step_up": {
+          "n": 1142,
+          "mae": 0.9802,
+          "rmse": 1.2173,
+          "bias": 0.5195,
+          "spearman": 0.4262
+        },
+        "kansas_transfers": {
+          "n": 16,
+          "mae": 1.217,
+          "rmse": 1.504,
+          "bias": 1.0833,
+          "spearman": 0.384
+        }
+      }
+    },
+    {
+      "variant": "translation",
+      "penalty": 10.0,
+      "metrics": {
+        "all": {
+          "n": 14299,
+          "mae": 0.7832,
+          "rmse": 1.0116,
+          "bias": -0.0517,
+          "spearman": 0.5893
+        },
+        "transfers": {
+          "n": 4080,
+          "mae": 0.8596,
+          "rmse": 1.1021,
+          "bias": -0.149,
+          "spearman": 0.441
+        },
+        "step_up": {
+          "n": 1142,
+          "mae": 0.8511,
+          "rmse": 1.106,
+          "bias": -0.2618,
+          "spearman": 0.4222
+        },
+        "kansas_transfers": {
+          "n": 16,
+          "mae": 0.9523,
+          "rmse": 1.2294,
+          "bias": 0.7151,
+          "spearman": 0.4107
+        }
+      }
+    },
+    {
+      "variant": "translation",
+      "penalty": 100.0,
+      "metrics": {
+        "all": {
+          "n": 14299,
+          "mae": 0.7831,
+          "rmse": 1.0115,
+          "bias": -0.0539,
+          "spearman": 0.5893
+        },
+        "transfers": {
+          "n": 4080,
+          "mae": 0.8587,
+          "rmse": 1.1009,
+          "bias": -0.1502,
+          "spearman": 0.442
+        },
+        "step_up": {
+          "n": 1142,
+          "mae": 0.85,
+          "rmse": 1.1051,
+          "bias": -0.2646,
+          "spearman": 0.4243
+        },
+        "kansas_transfers": {
+          "n": 16,
+          "mae": 0.9545,
+          "rmse": 1.232,
+          "bias": 0.7202,
+          "spearman": 0.4314
+        }
+      }
+    },
+    {
+      "variant": "translation",
+      "penalty": 1000.0,
+      "metrics": {
+        "all": {
+          "n": 14299,
+          "mae": 0.7849,
+          "rmse": 1.013,
+          "bias": -0.0631,
+          "spearman": 0.5877
+        },
+        "transfers": {
+          "n": 4080,
+          "mae": 0.855,
+          "rmse": 1.0953,
+          "bias": -0.1506,
+          "spearman": 0.4446
+        },
+        "step_up": {
+          "n": 1142,
+          "mae": 0.8456,
+          "rmse": 1.0989,
+          "bias": -0.2677,
+          "spearman": 0.4318
+        },
+        "kansas_transfers": {
+          "n": 16,
+          "mae": 0.9811,
+          "rmse": 1.2412,
+          "bias": 0.742,
+          "spearman": 0.4033
+        }
+      }
+    }
+  ],
+  "audit": [
+    {
+      "origin_season": 2015,
+      "eligible": 3020,
+      "unobserved_return": 1203,
+      "missing_destination_context": 0
+    },
+    {
+      "origin_season": 2016,
+      "eligible": 3059,
+      "unobserved_return": 1251,
+      "missing_destination_context": 0
+    },
+    {
+      "origin_season": 2017,
+      "eligible": 2933,
+      "unobserved_return": 1208,
+      "missing_destination_context": 0
+    },
+    {
+      "origin_season": 2018,
+      "eligible": 3030,
+      "unobserved_return": 1248,
+      "missing_destination_context": 1
+    },
+    {
+      "origin_season": 2019,
+      "eligible": 3047,
+      "unobserved_return": 1240,
+      "missing_destination_context": 0
+    },
+    {
+      "origin_season": 2020,
+      "eligible": 3034,
+      "unobserved_return": 1148,
+      "missing_destination_context": 3
+    },
+    {
+      "origin_season": 2021,
+      "eligible": 3027,
+      "unobserved_return": 664,
+      "missing_destination_context": 3
+    },
+    {
+      "origin_season": 2022,
+      "eligible": 3117,
+      "unobserved_return": 1031,
+      "missing_destination_context": 3
+    },
+    {
+      "origin_season": 2023,
+      "eligible": 3152,
+      "unobserved_return": 1023,
+      "missing_destination_context": 0
+    },
+    {
+      "origin_season": 2024,
+      "eligible": 3168,
+      "unobserved_return": 1034,
+      "missing_destination_context": 1
+    },
+    {
+      "origin_season": 2025,
+      "eligible": 3167,
+      "unobserved_return": 1261,
+      "missing_destination_context": 2
+    }
+  ],
+  "ku_transfers": [
+    {
+      "name": "Isaiah Moss",
+      "season": 2020,
+      "source_team": "Iowa",
+      "actual": 1.6,
+      "fitted": 1.81,
+      "minutes_share": 59.27710843373494
+    },
+    {
+      "name": "Remy Martin",
+      "season": 2022,
+      "source_team": "Arizona State",
+      "actual": 1.9,
+      "fitted": 3.234,
+      "minutes_share": 39.31888544891641
+    },
+    {
+      "name": "Joseph Yesufu",
+      "season": 2022,
+      "source_team": "Drake",
+      "actual": 0.1,
+      "fitted": 2.061,
+      "minutes_share": 19.56656346749226
+    },
+    {
+      "name": "Jalen Coleman-Lands",
+      "season": 2022,
+      "source_team": "Iowa State",
+      "actual": 0.8,
+      "fitted": 2.023,
+      "minutes_share": 19.814241486068113
+    },
+    {
+      "name": "Kevin McCullar Jr.",
+      "season": 2023,
+      "source_team": "Texas Tech",
+      "actual": 1.6,
+      "fitted": 2.015,
+      "minutes_share": 71.86206896551724
+    },
+    {
+      "name": "Hunter Dickinson",
+      "season": 2024,
+      "source_team": "Michigan",
+      "actual": 3.7,
+      "fitted": 3.741,
+      "minutes_share": 77.87545787545787
+    },
+    {
+      "name": "Parker Braun",
+      "season": 2024,
+      "source_team": "Santa Clara",
+      "actual": 0.4,
+      "fitted": 0.809,
+      "minutes_share": 18.681318681318682
+    },
+    {
+      "name": "Nicolas Timberlake",
+      "season": 2024,
+      "source_team": "Towson",
+      "actual": 0.6,
+      "fitted": 3.375,
+      "minutes_share": 38.16849816849817
+    },
+    {
+      "name": "Rylan Griffen",
+      "season": 2025,
+      "source_team": "Alabama",
+      "actual": 0.9,
+      "fitted": 2.357,
+      "minutes_share": 48.50909090909091
+    },
+    {
+      "name": "Shakeel Moore",
+      "season": 2025,
+      "source_team": "Mississippi State",
+      "actual": 0.4,
+      "fitted": 1.726,
+      "minutes_share": 20.145454545454545
+    },
+    {
+      "name": "David Coit",
+      "season": 2025,
+      "source_team": "Northern Illinois",
+      "actual": 1.1,
+      "fitted": 2.065,
+      "minutes_share": 38.4
+    },
+    {
+      "name": "Zeke Mayo",
+      "season": 2025,
+      "source_team": "South Dakota State",
+      "actual": 2.6,
+      "fitted": 1.959,
+      "minutes_share": 78.61818181818182
+    },
+    {
+      "name": "AJ Storr",
+      "season": 2025,
+      "source_team": "Wisconsin",
+      "actual": 0.4,
+      "fitted": 2.956,
+      "minutes_share": 38.836363636363636
+    },
+    {
+      "name": "Tre White",
+      "season": 2026,
+      "source_team": "Illinois",
+      "actual": 3.3,
+      "fitted": 2.793,
+      "minutes_share": 77.73049645390071
+    },
+    {
+      "name": "Jayden Dawson",
+      "season": 2026,
+      "source_team": "Loyola Chicago",
+      "actual": 0.4,
+      "fitted": 1.834,
+      "minutes_share": 16.382978723404257
+    },
+    {
+      "name": "Melvin Council Jr.",
+      "season": 2026,
+      "source_team": "St. Bonaventure",
+      "actual": 2.1,
+      "fitted": 2.433,
+      "minutes_share": 86.31205673758865
+    }
+  ],
+  "source_sha256": {
+    "2014/players": "0222ec9e5f2baef40e9b80ddd5fb2b5b5d6ee5d1166efc8d3099701e7521f5bf",
+    "2014/teams": "02902e523f959932aa93e7325235862eec8bdfa4650ed69f623fa8b49a6d62ce",
+    "2014/ratings": "5fb49677bc78bcd96dae014b46cbd874084f2598ca4b23220492c189eddabea9",
+    "2015/players": "9f495114269c8a592192d8638d70d50327985ad27421bbd6020cd60110524cb7",
+    "2015/teams": "59361b5d24fd702626003f1ff5ad3021413530d9040861e10d5d38299873aac4",
+    "2015/ratings": "75a593f56ef92025e8338bcc36cf6e4bb28bcdd517b5cfc7fd174cb63d06fd47",
+    "2016/players": "4208e69c794083aeceefd0e20e580126ca0c9b8c6742d3fa03a64d5e3196b688",
+    "2016/teams": "86a5cbe4df8cae1a60b8ea0186c74bd6605b11b3c9de85d3180fbbbc55180018",
+    "2016/ratings": "8bcfe0de647c0cc92251abeedfb70fe82be6f61ae9cb0ea44d676f3b8a5f7d2d",
+    "2017/players": "82f573b0b69eda46b7c1d7ddec4014f252c4a929e4ef41def49ccca50ec3f5c8",
+    "2017/teams": "db8bd9268c780eb53b4aeb21f5df65bf519af9d6cafdc4322790fd0aee425503",
+    "2017/ratings": "bef06536977a2dea9d470dcb91fff3882e9c1efbbca505ae2e5dc5ee68f5a301",
+    "2018/players": "ae0285765796371076f7390f6fd5e60d6b929b3ddffed293fd96413c5620cb25",
+    "2018/teams": "17ce42af1a9a80d10e9f7cfdd2c2923212e4fc88b7c36cfe4ed551948982c736",
+    "2018/ratings": "aaaad8120dfab338fb103923d1508a2e000f02fe87bba3260aa2666297294342",
+    "2019/players": "0614759d3a41d5ccf47f1723a2f5f64f2c445817ef2167ab0539ffdb61f46e46",
+    "2019/teams": "c1f440860a03a9eb435b9217ff82f25e458a19adb4b14d627bf0c9b5720596ad",
+    "2019/ratings": "f7907438ace01604f5bef02e5e7f97b88734345afaf09c8a0aa69ed8634b6ac8",
+    "2020/players": "e4c4ebc578f3b3a1acc39e3344d3e7dc30e8e0ba40f738601077b68bc94436c2",
+    "2020/teams": "d788d1488570273707bb588df588314ba1458d5be21b0006e28e52313caf3e6b",
+    "2020/ratings": "d4f8de60c04763c7ceb8fad3ee53e1ae176edba53b5dc1bd0d952480e9ecba60",
+    "2021/players": "c9063141a101bf783162228b7d8c436c9ffd02030ed110b2bc9c6fdba7e8edbd",
+    "2021/teams": "10ff2c09ce9e2b0388073b09cd9f2ef252313ab524fef284594010bebbbc2810",
+    "2021/ratings": "0e1f9f23a8581c117903d30d1e9f67de156bf7362501e60240fc96b8dbf4a916",
+    "2022/players": "d7faf35de0545d46b12331ca054620ede3990f94d9df4d8997fd7bb7bbf1eaf3",
+    "2022/teams": "e1cc4c909bd08b7d2366eae7a8742e355120350aef5ad99eca526cdb13e79427",
+    "2022/ratings": "228bd9ddf5d3c368cb73a112a49581de4e0e0c11b22ac4fb78cb3e2abd78f778",
+    "2023/players": "ce0b6bb1b83a61acd380434765a2833b1f638de6e4d49c5fe4b17ab71ee19a00",
+    "2023/teams": "9dc4fd810c1f3fee61c8da94b2deff404b065a684e03749ad787396e53d46e2a",
+    "2023/ratings": "444551653908549cd5724fb1aeed7a506044f3d50aa712d8e429834262ba8501",
+    "2024/players": "9aac0117d343d3f2c61e1c774c1fe5b648ef82c2352204c6b860a29320806942",
+    "2024/teams": "fe7d45c78f44883c36d4dc60f9f94c9ffb460498dd903e9ec216878c1a815b06",
+    "2024/ratings": "fec482706382cf8fa20de82db8e5cfe49d14f2f5c4edb78ea52dbc0b3f7916b8",
+    "2025/players": "581396176201b19be60821b258f28f268178fc80b50901d779b8db09ba914571",
+    "2025/teams": "335f48799237b1bdaf999a3e58969381563a1fe3a9387949ffed929eaee4e201",
+    "2025/ratings": "94f660223117eed4f68c0c27f21d81f99832c45c8d703c2125a82edd54373e53",
+    "2026/players": "9f08a3c101e1d1a727c58fe03c0276c4c18cdcb56e3af16dc6e43467069efa40",
+    "2026/teams": "98e9b85a9c8cb4d10cf70fc16842d5650ff30890b916e648f301961e3ab9ef32",
+    "2026/ratings": "b777369107da1a1f81d7c18becaa1e8f9f53aeab7e87e13d12e082560ea63104"
+  },
+  "status": "Chronological tuning, not an independent accuracy test; early-season inputs unvalidated",
+  "limits": [
+    "All completed matched outcomes enter final fitting; no permanent holdout.",
+    "Only unique same-provider athlete ID and matching normalized name transitions; unobserved returns excluded, not failures.",
+    "Per-100 counts use estimated on-court possessions, not substitution tracking.",
+    "League strength uses origin-season mean adjusted net efficiency; no future destination ratings.",
+    "Step-up audit subgroup: transfer into a league at least 5 adjusted-net points/100 stronger. Model uses continuous gap.",
+    "Conference context is not an individual opponent-by-opponent schedule adjustment.",
+    "PORPAG is an offensive production proxy, not comprehensive defensive impact.",
+    "Combined recommendation is an explicit 80% projected production percentile / 20% KU resemblance preference, not a trained success probability."
+  ]
+}
